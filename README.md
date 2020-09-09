@@ -1,2 +1,2 @@
 # Kawoosh
-Diag analyser
+Diag com.datastax.kawoosh.analyser
