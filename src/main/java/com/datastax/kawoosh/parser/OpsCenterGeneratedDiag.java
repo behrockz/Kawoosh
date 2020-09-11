@@ -47,7 +47,7 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
 
     protected IpPathPair getPair(String basePath, String nodeIp, String relativePath){
         String path = basePath + File.separator + nodeIp + File.separator + relativePath;
-        path = path.replace(File.separator.repeat(2), File.separator);
+        path = path.replace(File.separator+File.separator, File.separator);
         if(new File(path).exists()){
             return new IpPathPair(nodeIp, path, path.replace(rootPath, ""));
         }
