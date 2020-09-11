@@ -13,10 +13,11 @@ public class ClusterInfoReader implements Reader {
         ObjectMapper mapper = new ObjectMapper();
         try {
             Map info = mapper.readValue(new File(path), Map.class);
-            return Stream.empty();
+            return info.keySet().stream()
+                    .map(key -> new Pair(key, info.get(key) == null ? "" : info.get(key)));
         } catch (IOException e) {
             e.printStackTrace();
+            return Stream.empty();
         }
-        return Stream.empty();
     }
 }

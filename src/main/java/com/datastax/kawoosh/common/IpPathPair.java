@@ -1,5 +1,7 @@
 package com.datastax.kawoosh.common;
 
+import java.io.File;
+
 public class IpPathPair {
     String ip;
     String path;
@@ -8,7 +10,7 @@ public class IpPathPair {
     public IpPathPair(String ip, String path, String relativePath) {
         this.ip = ip;
         this.path = path;
-        this.relativePath = relativePath;
+        this.relativePath = relativePath.trim();
     }
 
     public String getIp() {

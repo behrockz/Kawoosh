@@ -9,6 +9,7 @@ import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 
 public class OpsCenterGeneratedDiag extends DirectoryParser {
     ClusterInfoReader clusterInfoReader;
-    String clusterInfoPath;
+    Stream<IpPathPair> clusterInfo;
 
     public OpsCenterGeneratedDiag(String rootPath,
                                   ClusterConfigBuilder clusterConfigBuilder,
@@ -31,22 +32,25 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         this.clusterInfoReader = clusterInfoReader;
 
         nodesPath = rootPath + File.separator + "nodes";
-        clusterInfoPath = rootPath + File.separator + "cluster_info.json";
         String[] nodes = new File(nodesPath).list();
 
-        cassandraYamls = groupFiles(nodes, "conf/cassandra/cassandra.yaml");
-        dseYamls = groupFiles(nodes, "conf/dse/dse.yaml");
-        tableStats = groupFiles(nodes, "nodetool/cfstats");
+        cassandraYamls = groupFiles(nodesPath, nodes, "conf/cassandra/cassandra.yaml");
+        dseYamls = groupFiles(nodesPath, nodes, "conf/dse/dse.yaml");
+        tableStats = groupFiles(nodesPath, nodes, "nodetool/cfstats");
+
+        clusterInfo = groupFiles(rootPath, new String[]{ "" }, "cluster_info.json");
     }
 
-    Stream<IpPathPair> groupFiles(String[] nodes, String pathFromNodes){
-        return Arrays.stream(nodes).map(node -> getPair(node, pathFromNodes)).filter(Objects::nonNull);
+    Stream<IpPathPair> groupFiles(String basePath, String[] nodes, String relativePath){
+        return Arrays.stream(nodes).map(node -> getPair(basePath, node, relativePath)).filter(Objects::nonNull);
     }
 
-    protected IpPathPair getPair(String nodeIp, String pathFromNodes){
-        String path = nodesPath + File.separator + nodeIp + File.separator + pathFromNodes;
-        if(new File(path).exists())
+    protected IpPathPair getPair(String basePath, String nodeIp, String relativePath){
+        String path = basePath + File.separator + nodeIp + File.separator + relativePath;
+        path = path.replace(File.separator.repeat(2), File.separator);
+        if(new File(path).exists()){
             return new IpPathPair(nodeIp, path, path.replace(rootPath, ""));
+        }
 
         return null;
     }
@@ -63,10 +67,12 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         if(files.contains("opscenterd"))
             streamBuilder.add(clusterConfigBuilder.Build(clusterName, "", root.getName(), "OpsCenter", "True"));
 
-        Stream<ClusterConfig> clusterInfoResult = clusterInfoReader.read(clusterInfoPath).map(i ->
-                clusterConfigBuilder.Build(clusterName, "", clusterInfoPath, i.getKey(), i.getValue()));
 
+        Stream<ClusterConfig> clusterInfoResult = parseTheFiles(clusterInfoReader, clusterInfo);
         Stream<ClusterConfig> superResult = super.readDiag();
-        return Stream.of(streamBuilder.build(), clusterInfoResult, superResult).flatMap(r -> r);
+        return Stream.of(streamBuilder.build(),
+                superResult,
+                clusterInfoResult
+                ).flatMap(r -> r);
     }
 }
