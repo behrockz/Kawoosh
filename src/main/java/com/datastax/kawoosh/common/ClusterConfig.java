@@ -23,6 +23,19 @@ public class ClusterConfig {
         this.value = value;
     }
 
+    public String getCollectionName(){
+        return String.format("{0}-{1}-{2}-{3}-{4}", year, quarter, platform, group, clusterName);
+    }
+
+    public String getId(){
+        return confName;
+    }
+
+    public String getPropertyName(){
+        return nodeIp;
+    }
+
+
     public String getYear() {
         return year;
     }
