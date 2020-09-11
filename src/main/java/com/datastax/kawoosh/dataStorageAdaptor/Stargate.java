@@ -1,6 +1,6 @@
 package com.datastax.kawoosh.dataStorageAdaptor;
 
-import com.datastax.kawoosh.ClusterConfig;
+import com.datastax.kawoosh.common.ClusterConfig;
 
 public class Stargate implements DataStorage {
     @Override

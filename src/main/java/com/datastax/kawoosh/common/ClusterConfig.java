@@ -1,4 +1,4 @@
-package com.datastax.kawoosh;
+package com.datastax.kawoosh.common;
 
 public class ClusterConfig {
     String year;
@@ -11,7 +11,7 @@ public class ClusterConfig {
     String confName;
     String value;
 
-    public ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
+    ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
         this.year = year;
         this.quarter = quarter;
         this.platform = platform;
@@ -57,5 +57,20 @@ public class ClusterConfig {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "ClusterConfig{" +
+                "year='" + year + '\'' +
+                ", quarter='" + quarter + '\'' +
+                ", platform='" + platform + '\'' +
+                ", group='" + group + '\'' +
+                ", clusterName='" + clusterName + '\'' +
+                ", nodeIp='" + nodeIp + '\'' +
+                ", filename='" + filename + '\'' +
+                ", confName='" + confName + '\'' +
+                ", value='" + value + '\'' +
+                '}';
     }
 }
