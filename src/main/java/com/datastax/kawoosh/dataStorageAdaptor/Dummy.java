@@ -2,9 +2,11 @@ package com.datastax.kawoosh.dataStorageAdaptor;
 
 import com.datastax.kawoosh.common.ClusterConfig;
 
+import java.util.List;
+
 public class Dummy implements DataStorage {
     @Override
-    public ClusterConfig read(String year, String program, String group, String clusterName, String confName) {
+    public List<ClusterConfig> read(String year, String program, String group, String clusterName, String confName) {
         return null;
     }
 
