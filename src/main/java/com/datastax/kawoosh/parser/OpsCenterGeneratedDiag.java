@@ -69,8 +69,8 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         Stream<ClusterConfig> clusterInfoResult = parseTheFiles(clusterInfoReader, clusterInfo);
         Stream<ClusterConfig> superResult = super.readDiag();
         return Stream.of(streamBuilder.build(),
-                superResult,
-                clusterInfoResult
+                clusterInfoResult,
+                superResult
                 ).flatMap(r -> r);
     }
 }

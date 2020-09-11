@@ -11,13 +11,13 @@ public class RuleBook {
 
     public RuleBook(ClusterConfigRetriver clusterConfigRetriver) {
         this.rules =  new ArrayList<>();
+        rules.add(new ClusterIdRule(clusterConfigRetriver));
         rules.add(new AutoBootStrapCheckRule(clusterConfigRetriver));
         rules.add(new AutoSnapshotCheckRule(clusterConfigRetriver));
         rules.add(new VnodeCheckRule(clusterConfigRetriver));
         rules.add(new ConcurrencyCheckRule(clusterConfigRetriver));
         rules.add(new CompactionCheckRule(clusterConfigRetriver));
         rules.add(new SeedListRule(clusterConfigRetriver));
-        rules.add(new ClusterIdRule(clusterConfigRetriver));
         rules.add(new LargePartitionCheckRule(clusterConfigRetriver));
         rules.add(new NbOfSSTablesCheckRule(clusterConfigRetriver));
         rules.add(new TombstonesCheckRule(clusterConfigRetriver));
