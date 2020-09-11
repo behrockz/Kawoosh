@@ -3,6 +3,8 @@ package com.datastax.kawoosh.parser;
 import com.datastax.kawoosh.common.ClusterConfig;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.IpPathPair;
+import com.datastax.kawoosh.parser.fileReader.TableStatReader;
+import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
 import java.io.File;
 import java.util.Arrays;

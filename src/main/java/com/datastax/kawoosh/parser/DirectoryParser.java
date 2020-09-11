@@ -3,6 +3,9 @@ package com.datastax.kawoosh.parser;
 import com.datastax.kawoosh.common.ClusterConfig;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.IpPathPair;
+import com.datastax.kawoosh.parser.fileReader.Reader;
+import com.datastax.kawoosh.parser.fileReader.TableStatReader;
+import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
 import java.util.stream.Stream;
 
@@ -36,9 +39,9 @@ public abstract class DirectoryParser {
     }
 
     public Stream<ClusterConfig> readDiag(){
-        Stream<ClusterConfig> cassandraYamlsResults = yamlReader(cassandraYamls);
-        Stream<ClusterConfig> dseYamlsResults = yamlReader(dseYamls);
-        Stream<ClusterConfig> tableStatsResult = tableStatsReader(tableStats);
+        Stream<ClusterConfig> cassandraYamlsResults = parseTheFiles(yamlReader, cassandraYamls);
+        Stream<ClusterConfig> dseYamlsResults = parseTheFiles(yamlReader, dseYamls);
+        Stream<ClusterConfig> tableStatsResult = parseTheFiles(tableStatReader, tableStats);
 
         return Stream.of(
                 cassandraYamlsResults,
@@ -47,20 +50,11 @@ public abstract class DirectoryParser {
                 .flatMap(c -> c);
     }
 
-    private Stream<ClusterConfig> yamlReader(Stream<IpPathPair> yamls) {
-        return yamls.flatMap(pair -> yamlReader.read(pair.getPath()).map(entry ->
+    private Stream<ClusterConfig> parseTheFiles(Reader reader, Stream<IpPathPair> files){
+        return files.flatMap( f -> reader.read(f.getPath()).map(entry ->
                 clusterConfigBuilder.Build(clusterName,
-                        pair.getIp(),
-                        pair.getRelativePath(),
-                        entry.getKey().toString(),
-                        entry.getValue().toString())));
-    }
-
-    private Stream<ClusterConfig> tableStatsReader(Stream<IpPathPair> tableStats){
-        return tableStats.flatMap( ts -> tableStatReader.read(ts.getPath()).map(entry ->
-                clusterConfigBuilder.Build(clusterName,
-                        ts.getIp(),
-                        ts.getRelativePath(),
+                        f.getIp(),
+                        f.getRelativePath(),
                         entry.getKey().toString(),
                         entry.getValue().toString())));
     }

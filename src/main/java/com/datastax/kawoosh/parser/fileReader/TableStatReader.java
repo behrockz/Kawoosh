@@ -1,4 +1,4 @@
-package com.datastax.kawoosh.parser;
+package com.datastax.kawoosh.parser.fileReader;
 
 import javafx.util.Pair;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TableStatReader {
-    Stream<Pair<String, String>> read(String path){
-        Stream.Builder<Pair<String, String>> stream = Stream.builder();
+public class TableStatReader implements Reader {
+    public Stream<Pair> read(String path){
+        Stream.Builder<Pair> stream = Stream.builder();
 
         try (Stream<String> lines = Files.lines(Paths.get(path))) {
             String keyspace = null;

@@ -6,8 +6,8 @@ import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.Dummy;
 import com.datastax.kawoosh.parser.DirectoryParser;
 import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
-import com.datastax.kawoosh.parser.TableStatReader;
-import com.datastax.kawoosh.parser.YamlReader;
+import com.datastax.kawoosh.parser.fileReader.TableStatReader;
+import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
 
 public class Main {

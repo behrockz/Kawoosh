@@ -1,4 +1,4 @@
-package com.datastax.kawoosh.parser;
+package com.datastax.kawoosh.parser.fileReader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -10,8 +10,8 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class YamlReader {
-    Stream<Pair> read(String path){
+public class YamlReader implements Reader {
+    public Stream<Pair> read(String path){
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
         InputStream resource;
