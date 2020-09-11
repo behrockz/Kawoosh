@@ -28,8 +28,14 @@ public abstract class TableValueInRangeRule extends Rule {
     @Override
     public String check() {
         List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorageByToken(configName);
-        List<String> results= new ArrayList<String>();;
+        List<String> results= new ArrayList<>();;
         clusterConfigs.forEach((cc) -> {if((Long.parseLong(cc.getValue())>maxValue) || (Long.parseLong(cc.getValue())<minValue)) {results.add("\n\t" + cc.toString());};});
-        return String.join("\n\t", results);
+
+        if(results.isEmpty())
+            return "Rule " + ruleName + " returns success";
+
+        String retVal = "Rule " + ruleName + " returns these as out of range:";
+        retVal += String.join("\n\t", results);
+        return retVal;
     }
 }
