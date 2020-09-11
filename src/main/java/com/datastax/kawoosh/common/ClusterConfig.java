@@ -88,7 +88,7 @@ public class ClusterConfig {
     }
 
     public String PretyToString(){
-        return getNodeIp() + "->" +
+        return getNodeIp() + " -> " +
                 getConfName() + ": " +
                getValue();
     }
