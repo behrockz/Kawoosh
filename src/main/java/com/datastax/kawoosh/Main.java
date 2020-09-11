@@ -33,18 +33,10 @@ public class Main {
         parser.readDiag().forEach(conf -> storage.write(conf));
 
         ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[1], args[2], args[3], args[4], parser.getClusterName());
-        ArrayList<Rule> ruleList = new ArrayList<Rule> ();
-        ruleList.add(new AutoBootStrapCheckRule(clusterConfigRetriver));
-        ruleList.add(new AutoSnapshotCheckRule(clusterConfigRetriver));
-        ruleList.add(new VnodeCheckRule(clusterConfigRetriver));
-        ruleList.add(new ConcurrencyCheckRule(clusterConfigRetriver));
-        ruleList.add(new CompactionCheckRule(clusterConfigRetriver));
-        ruleList.add(new SeedListRule(clusterConfigRetriver));
-        ruleList.add(new ClusterIdRule(clusterConfigRetriver));
-        ruleList.add(new LargePartitionCheckRule(clusterConfigRetriver));
-        ruleList.add(new NbOfSSTablesCheckRule(clusterConfigRetriver));
-        Analyser analyser = new Analyser(ruleList);
-        analyser.analyse().forEach(s -> System.out.println(s));
+
+        RuleBook ruleBook = new RuleBook(clusterConfigRetriver);
+        Analyser analyser = new Analyser(ruleBook);
+        analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
         System.out.println("Done!");
     }
 }
