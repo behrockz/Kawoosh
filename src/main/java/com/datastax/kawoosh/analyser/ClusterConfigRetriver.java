@@ -20,4 +20,7 @@ public class ClusterConfigRetriver {
     public List<ClusterConfig> queryStorage(String confName) {
         return dataStorage.read(year, platform, group, clusterName, confName);
     }
+    public List<ClusterConfig> queryStorageByToken(String confName) {
+        return dataStorage.readAndFilterByToken(year, platform, group, clusterName, confName);
+    }
 }

@@ -15,6 +15,13 @@ public class MapStorage implements DataStorage {
     }
 
     @Override
+    public List<ClusterConfig> readAndFilterByToken(String year, String program, String group, String clusterName, String confName) {
+        List<ClusterConfig> flattened = new ArrayList<ClusterConfig>();
+        map.forEach((k,v) -> {if(k.contains(confName)) {flattened.addAll(v);};});
+        return flattened;
+    }
+
+    @Override
     public void write(ClusterConfig conf) {
         if(!map.containsKey(getKey(conf)))
             map.put(getKey(conf), new ArrayList<>());
