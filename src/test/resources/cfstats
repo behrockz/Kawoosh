@@ -1125,7 +1125,7 @@ Keyspace : dse_perf
 		Dropped Mutations: 0
 
 ----------------
-Keyspace : activity_persister
+Keyspace : detonation_persister
 	Read Count: 1953
 	Read Latency: 315.46333077316945 ms.
 	Write Count: 160541404
