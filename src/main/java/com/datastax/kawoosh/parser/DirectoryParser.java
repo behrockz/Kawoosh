@@ -55,7 +55,7 @@ public abstract class DirectoryParser {
                 clusterConfigBuilder.Build(clusterName,
                         f.getIp(),
                         f.getRelativePath(),
-                        entry.getKey().toString(),
-                        entry.getValue().toString())));
+                        entry.getKey(),
+                        entry.getValue())));
     }
 }

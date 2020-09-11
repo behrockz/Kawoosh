@@ -1,6 +1,5 @@
 package com.datastax.kawoosh.parser.fileReader;
 
-import javafx.util.Pair;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,7 +20,7 @@ public class TableStatReader implements Reader {
                     continue;
                 }
                 if(keyspace == null){
-                    Pair<String, String> valuePair = readValue(line);
+                    Pair valuePair = readValue(line);
                     if(!valuePair.getKey().equals("Keyspace"))
                         continue;
                     keyspace = valuePair.getValue();
@@ -29,7 +28,7 @@ public class TableStatReader implements Reader {
                 }
 
                 if(!line.isEmpty()){
-                    Pair<String, String> lineValue = readValue(line);
+                    Pair lineValue = readValue(line);
                     if(lineValue.getKey().equals("Table")){
                         table = lineValue.getValue();
                         continue;
@@ -50,12 +49,12 @@ public class TableStatReader implements Reader {
         return stream.build();
     }
 
-    Pair<String, String> readValue(String line){
+    Pair readValue(String line){
         line = line.trim();
         String key = line.substring(0, line.indexOf(':') );
         String value = line.substring(line.indexOf(':') + 1).trim();
 
-        return new Pair<>(key, value);
+        return new Pair(key, value);
     }
 
 }

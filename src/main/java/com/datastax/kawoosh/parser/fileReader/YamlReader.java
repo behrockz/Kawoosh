@@ -2,7 +2,6 @@ package com.datastax.kawoosh.parser.fileReader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import javafx.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.IOException;
