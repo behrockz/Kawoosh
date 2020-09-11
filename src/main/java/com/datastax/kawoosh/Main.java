@@ -6,6 +6,7 @@ import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.Dummy;
 import com.datastax.kawoosh.parser.DirectoryParser;
 import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
+import com.datastax.kawoosh.parser.TableStatReader;
 import com.datastax.kawoosh.parser.YamlReader;
 
 
@@ -14,7 +15,8 @@ public class Main {
 
         ClusterConfigBuilder builder = new ClusterConfigImpl(args[1], args[2], args[3], args[4]);
         YamlReader yamlReader = new YamlReader();
-        DirectoryParser parser = new OpsCenterGeneratedDiag(args[0], builder, yamlReader);
+        TableStatReader tableStatReader = new TableStatReader();
+        DirectoryParser parser = new OpsCenterGeneratedDiag(args[0], builder, yamlReader, tableStatReader);
         DataStorage storage = new Dummy();
         parser.readDiag().forEach(conf -> storage.write(conf));
 

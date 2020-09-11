@@ -15,17 +15,18 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
 
     public OpsCenterGeneratedDiag(String rootPath,
                                   ClusterConfigBuilder clusterConfigBuilder,
-                                  YamlReader yamlReader) {
+                                  YamlReader yamlReader, TableStatReader tableStatReader) {
         super(rootPath,
                 clusterConfigBuilder,
-                yamlReader);
+                yamlReader,
+                tableStatReader);
 
         nodesPath = rootPath + File.separator + "nodes";
         String[] nodes = new File(nodesPath).list();
 
         cassandraYamls = groupFiles(nodes, "conf/cassandra/cassandra.yaml");
         dseYamls = groupFiles(nodes, "conf/dse/dse.yaml");
-        tableStats = groupFiles(nodes, "nodetool/cfstats ");
+        tableStats = groupFiles(nodes, "nodetool/cfstats");
     }
 
     Stream<IpPathPair> groupFiles(String[] nodes, String pathFromNodes){

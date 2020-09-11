@@ -10,6 +10,7 @@ public abstract class DirectoryParser {
     String rootPath;
     ClusterConfigBuilder clusterConfigBuilder;
     YamlReader yamlReader;
+    TableStatReader tableStatReader;
 
     String nodesPath;
     String clusterName;
@@ -26,10 +27,12 @@ public abstract class DirectoryParser {
 
     public DirectoryParser(String rootPath,
                            ClusterConfigBuilder clusterConfigBuilder,
-                           YamlReader yamlReader) {
+                           YamlReader yamlReader,
+                           TableStatReader tableStatReader) {
         this.rootPath = rootPath;
         this.clusterConfigBuilder = clusterConfigBuilder;
         this.yamlReader = yamlReader;
+        this.tableStatReader = tableStatReader;
     }
 
     public Stream<ClusterConfig> readDiag(){
@@ -42,7 +45,6 @@ public abstract class DirectoryParser {
                 dseYamlsResults,
                 tableStatsResult)
                 .flatMap(c -> c);
-
     }
 
     private Stream<ClusterConfig> yamlReader(Stream<IpPathPair> yamls) {
@@ -55,6 +57,11 @@ public abstract class DirectoryParser {
     }
 
     private Stream<ClusterConfig> tableStatsReader(Stream<IpPathPair> tableStats){
-        return Stream.empty();
+        return tableStats.flatMap( ts -> tableStatReader.read(ts.getPath()).map(entry ->
+                clusterConfigBuilder.Build(clusterName,
+                        ts.getIp(),
+                        ts.getRelativePath(),
+                        entry.getKey().toString(),
+                        entry.getValue().toString())));
     }
 }
