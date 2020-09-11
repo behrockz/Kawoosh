@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Dummy implements DataStorage {
     @Override
-    public List<ClusterConfig> read(String year, String program, String group, String clusterName, String confName) {
+    public List<ClusterConfig> read(String year, String quarter, String platform, String group, String clusterName, String confName) {
         return null;
     }
 

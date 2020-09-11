@@ -18,7 +18,7 @@ public class ClusterConfigRetriver {
     }
 
     public List<ClusterConfig> queryStorage(String confName) {
-        return dataStorage.read(year, platform, group, clusterName, confName);
+        return dataStorage.read(year, quarter, platform, group, clusterName, confName);
     }
 
 }

@@ -10,7 +10,7 @@ public class MapStorage implements DataStorage {
     HashMap<String, List<ClusterConfig>> map = new HashMap<>();
 
     @Override
-    public List<ClusterConfig> read(String year, String program, String group, String clusterName, String confName) {
+    public List<ClusterConfig> read(String year, String quarter, String platform, String group, String clusterName, String confName) {
         return map.get(confName);
     }
 
