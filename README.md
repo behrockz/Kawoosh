@@ -31,3 +31,6 @@ You need to pass the following Input arguments if you want to retrieve the repor
 4. Program (To identify which program this diagnostic tarball belongs to.)
 5. Group (To identify which group this diagnostic tarball belongs to.)
 6. ClusterName (Name of the cluster you want to see the report for)
+
+
+You can use this as a sample diagnostic tarball: https://drive.google.com/file/d/1yS6EYMPDG2qmtpf2fXagTSuWQ9DT3W39/view?usp=sharing
