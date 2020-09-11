@@ -1,9 +1,8 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.common.ClusterConfig;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ public abstract class AggregatorRule extends Rule {
     protected String ruleName;
     protected List<String> configNames;
 
-    public AggregatorRule(ClusterConfigRetriver clusterConfigRetriver, String ruleName, List<String> configNames) {
+    public AggregatorRule(ClusterConfigRetriever clusterConfigRetriver, String ruleName, List<String> configNames) {
         super(clusterConfigRetriver);
         this.ruleName = ruleName;
         this.configNames = configNames;

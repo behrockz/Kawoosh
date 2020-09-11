@@ -1,6 +1,6 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.common.ClusterConfig;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public abstract class SpecificValueForAconfigRule extends Rule {
     protected String configName;
     protected String expectedValue;
 
-    public SpecificValueForAconfigRule(ClusterConfigRetriver clusterConfigRetriver,
+    public SpecificValueForAconfigRule(ClusterConfigRetriever clusterConfigRetriver,
                                        String ruleName,
                                        String configName,
                                        String expectedValue) {

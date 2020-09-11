@@ -1,11 +1,10 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.common.ClusterConfig;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class TableValueInRangeRule extends Rule {
     protected String ruleName;
@@ -13,7 +12,7 @@ public abstract class TableValueInRangeRule extends Rule {
     protected Double minValue;
     protected Double maxValue;
 
-    public TableValueInRangeRule(ClusterConfigRetriver clusterConfigRetriver,
+    public TableValueInRangeRule(ClusterConfigRetriever clusterConfigRetriver,
                                  String ruleName,
                                  String configName,
                                  Double minValue,
