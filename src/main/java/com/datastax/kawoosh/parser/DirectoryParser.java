@@ -20,9 +20,9 @@ public abstract class DirectoryParser {
     Stream<IpPathPair> cassandraYamls;
     Stream<IpPathPair> dseYamls;
     Stream<IpPathPair> tableStats;
+    Stream<IpPathPair> versions;
     Stream<IpPathPair> nodetoolStatuses;
     Stream<IpPathPair> cassandraEnvs;
-    Stream<IpPathPair> versions;
     Stream<IpPathPair> describeClusters;
     Stream<IpPathPair> ntpStats;
     Stream<IpPathPair> osInfos;

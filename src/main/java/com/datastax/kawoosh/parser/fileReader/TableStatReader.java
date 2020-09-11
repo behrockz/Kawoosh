@@ -51,7 +51,9 @@ public class TableStatReader implements Reader {
 
     Pair readValue(String line){
         line = line.trim();
-        String key = line.substring(0, line.indexOf(':') );
+        if(line.isEmpty())
+            return new Pair("","");
+        String key = line.substring(0, line.indexOf(':')).trim();
         String value = line.substring(line.indexOf(':') + 1).trim();
 
         return new Pair(key, value);

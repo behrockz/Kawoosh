@@ -3,6 +3,8 @@ package com.datastax.kawoosh.parser;
 import com.datastax.kawoosh.common.ClusterConfig;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.IpPathPair;
+import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
+import com.datastax.kawoosh.parser.fileReader.Pair;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
@@ -14,16 +16,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OpsCenterGeneratedDiag extends DirectoryParser {
+    ClusterInfoReader clusterInfoReader;
+    String clusterInfoPath;
 
     public OpsCenterGeneratedDiag(String rootPath,
                                   ClusterConfigBuilder clusterConfigBuilder,
-                                  YamlReader yamlReader, TableStatReader tableStatReader) {
+                                  YamlReader yamlReader,
+                                  TableStatReader tableStatReader,
+                                  ClusterInfoReader clusterInfoReader) {
         super(rootPath,
                 clusterConfigBuilder,
                 yamlReader,
                 tableStatReader);
+        this.clusterInfoReader = clusterInfoReader;
 
         nodesPath = rootPath + File.separator + "nodes";
+        clusterInfoPath = rootPath + File.separator + "cluster_info.json";
         String[] nodes = new File(nodesPath).list();
 
         cassandraYamls = groupFiles(nodes, "conf/cassandra/cassandra.yaml");
@@ -55,7 +63,10 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         if(files.contains("opscenterd"))
             streamBuilder.add(clusterConfigBuilder.Build(clusterName, "", root.getName(), "OpsCenter", "True"));
 
-        Stream<ClusterConfig> result = super.readDiag();
-        return Stream.concat(streamBuilder.build(), result);
+        Stream<ClusterConfig> clusterInfoResult = clusterInfoReader.read(clusterInfoPath).map(i ->
+                clusterConfigBuilder.Build(clusterName, "", clusterInfoPath, i.getKey(), i.getValue()));
+
+        Stream<ClusterConfig> superResult = super.readDiag();
+        return Stream.of(streamBuilder.build(), clusterInfoResult, superResult).flatMap(r -> r);
     }
 }
