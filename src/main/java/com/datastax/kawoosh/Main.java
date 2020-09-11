@@ -39,4 +39,22 @@ public class Main {
         analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
         System.out.println("Done!");
     }
+
+    public static void main2(String[] args) {
+
+        ClusterConfigBuilder builder = new ClusterConfigImpl(args[1], args[2], args[3], args[4]);
+        YamlReader yamlReader = new YamlReader();
+        TableStatReader tableStatReader = new TableStatReader();
+        ClusterInfoReader clusterInfoReader = new ClusterInfoReader();
+        DirectoryParser parser = new OpsCenterGeneratedDiag(args[0], builder, yamlReader, tableStatReader, clusterInfoReader);
+        DataStorage storage = new MapStorage();
+        parser.readDiag().forEach(conf -> storage.write(conf));
+
+        ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[1], args[2], args[3], args[4], parser.getClusterName());
+
+        RuleBook ruleBook = new RuleBook(clusterConfigRetriver);
+        Analyser analyser = new Analyser(ruleBook);
+        analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
+        System.out.println("Done!");
+    }
 }

@@ -57,9 +57,9 @@ public abstract class DirectoryParser {
     protected Stream<ClusterConfig> parseTheFiles(Reader reader, Stream<IpPathPair> files){
         return files.flatMap( f -> reader.read(f.getPath()).map(entry ->
                 clusterConfigBuilder.Build(clusterName,
-                        f.getIp(),
+                        f.getIp() + entry.getValue3(),
                         f.getRelativePath(),
-                        entry.getKey(),
-                        entry.getValue())));
+                        entry.getValue1(),
+                        entry.getValue2())));
     }
 }

@@ -28,6 +28,9 @@ public abstract class TableValueInRangeRule extends Rule {
     @Override
     public String check() {
         List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorageByToken(configName);
+        if(clusterConfigs == null || clusterConfigs.isEmpty())
+            return "Rule " + ruleName + " is inconclusive due to lack of data!";
+
         List<String> results= new ArrayList<>();;
         clusterConfigs.forEach((cc) -> {if((Double.parseDouble(cc.getValue())>maxValue) || (Double.parseDouble(cc.getValue())<minValue)) {results.add("\n\t" + cc.PretyToString());};});
 

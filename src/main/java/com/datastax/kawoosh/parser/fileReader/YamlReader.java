@@ -1,5 +1,6 @@
 package com.datastax.kawoosh.parser.fileReader;
 
+import com.datastax.kawoosh.common.Tuple;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class YamlReader implements Reader {
-    public Stream<Pair> read(String path){
+    public Stream<Tuple> read(String path){
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
         InputStream resource;
@@ -20,7 +21,7 @@ public class YamlReader implements Reader {
             return readValue
                     .keySet()
                     .stream()
-                    .map(key -> new Pair(key, readValue.get(key) == null ? "" : readValue.get(key)));
+                    .map(key -> new Tuple(key, readValue.get(key) == null ? "" : readValue.get(key)));
         } catch (IOException e) {
             e.printStackTrace();
         }

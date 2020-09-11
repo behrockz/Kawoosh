@@ -4,12 +4,10 @@ import com.datastax.kawoosh.common.ClusterConfig;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.IpPathPair;
 import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
-import com.datastax.kawoosh.parser.fileReader.Pair;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

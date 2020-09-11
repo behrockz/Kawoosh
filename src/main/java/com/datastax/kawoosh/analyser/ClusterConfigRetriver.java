@@ -21,6 +21,6 @@ public class ClusterConfigRetriver {
         return dataStorage.read(year, platform, group, clusterName, confName);
     }
     public List<ClusterConfig> queryStorageByToken(String confName) {
-        return dataStorage.readAndFilterByToken(year, platform, group, clusterName, confName);
+        return dataStorage.read(year, platform, group, clusterName, confName);
     }
 }

@@ -1,5 +1,6 @@
 package com.datastax.kawoosh.parser.fileReader;
 
+import com.datastax.kawoosh.common.Tuple;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,12 +13,12 @@ class ReaderTest {
     @Test
     void readTableStats() {
         Reader reader = new TableStatReader();
-        Stream<Pair> output = reader.read("src/test/resources/cfstats");
+        Stream<Tuple> output = reader.read("src/test/resources/cfstats");
 
         assertNotNull(output);
 
         List<String> keys = output
-                .map(f -> f.getKey())
+                .map(f -> f.getValue1())
                 .collect(Collectors.toList());
 
         assertTrue(keys.contains("system_distributed.parent_repair_history.Average tombstones per slice (last five minutes)"));
@@ -28,10 +29,10 @@ class ReaderTest {
     @Test
     void readYaml() {
         Reader reader = new YamlReader();
-        Stream<Pair> output = reader.read("src/test/resources/cassandra.yaml");
+        Stream<Tuple> output = reader.read("src/test/resources/cassandra.yaml");
 
         List<String> keys = output
-                .map(f -> f.getKey())
+                .map(f -> f.getValue1())
                 .collect(Collectors.toList());
 
         assertTrue(keys.contains("dynamic_snitch_reset_interval_in_ms"));

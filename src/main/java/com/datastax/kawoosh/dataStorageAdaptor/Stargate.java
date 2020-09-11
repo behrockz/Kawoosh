@@ -11,11 +11,6 @@ public class Stargate implements DataStorage {
     }
 
     @Override
-    public List<ClusterConfig> readAndFilterByToken(String year, String program, String group, String clusterName, String confName) {
-        return null;
-    }
-
-    @Override
     public void write(ClusterConfig conf) {
 
     }
