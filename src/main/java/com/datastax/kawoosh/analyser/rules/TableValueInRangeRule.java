@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 public abstract class TableValueInRangeRule extends Rule {
     protected String ruleName;
     protected String configName;
-    protected Long minValue;
-    protected Long maxValue;
+    protected Double minValue;
+    protected Double maxValue;
 
     public TableValueInRangeRule(ClusterConfigRetriver clusterConfigRetriver,
                                  String ruleName,
                                  String configName,
-                                 Long minValue,
-                                 Long maxValue) {
+                                 Double minValue,
+                                 Double maxValue) {
         super(clusterConfigRetriver);
         this.ruleName = ruleName;
         this.configName = configName;
@@ -29,7 +29,7 @@ public abstract class TableValueInRangeRule extends Rule {
     public String check() {
         List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorageByToken(configName);
         List<String> results= new ArrayList<>();;
-        clusterConfigs.forEach((cc) -> {if((Long.parseLong(cc.getValue())>maxValue) || (Long.parseLong(cc.getValue())<minValue)) {results.add("\n\t" + cc.PretyToString());};});
+        clusterConfigs.forEach((cc) -> {if((Double.parseDouble(cc.getValue())>maxValue) || (Double.parseDouble(cc.getValue())<minValue)) {results.add("\n\t" + cc.PretyToString());};});
 
         if(results.isEmpty())
             return "Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") returns success!";
