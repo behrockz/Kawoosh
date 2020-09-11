@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Stargate implements DataStorage {
                 ClusterConfig conf = StargateHelper.mapper.treeToValue(data.get(field), ClusterConfig.class);
                 list.add(conf);
             }
-        } catch(IOException e) {
+        } catch(IOException | URISyntaxException e) {
             e.printStackTrace();
         }
         return list;
@@ -36,11 +37,11 @@ public class Stargate implements DataStorage {
     public void write(ClusterConfig conf) {
         try {
             JsonNode jnode = StargateHelper.mapper.createObjectNode()
-                    .set(conf.getPropertyName(),StargateHelper.mapper.valueToTree(conf));
+                    .set(conf.getNodeIp(),StargateHelper.mapper.valueToTree(conf));
 
-            //System.out.println(jnode.toPrettyString());
-            StargateHelper.insert(jnode, conf.getCollectionName(), conf.getConfName());
-        } catch(IOException e) {
+            String collectionName = String.format("%s_%s_%s_%s_%s", conf.getYear(), conf.getQuarter(), conf.getPlatform(), conf.getGroup(), conf.getClusterName());
+            StargateHelper.insert(jnode, collectionName, conf.getConfName());
+        } catch(IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 

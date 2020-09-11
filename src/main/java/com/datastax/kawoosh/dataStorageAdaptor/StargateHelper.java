@@ -6,12 +6,28 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
 public class StargateHelper {
+
 
     //Also used by stargate (package-private)
     static ObjectMapper mapper = new ObjectMapper();
@@ -30,7 +46,9 @@ public class StargateHelper {
     public static final String ASTRA_URL =
             String.format("https://%s-%s.apps.astra.datastax.com", ASTRA_CLUSTER_ID, ASTRA_CLUSTER_REGION);
 
-    private static String authToken = null;
+    private static String authToken = "9ecb22a6-199f-4427-ab38-730834790865";
+
+    private static CloseableHttpClient httpClient = HttpClients.createDefault();
 
     private static HttpURLConnection astraConnect(String method, String endpoint) throws IOException {
         URL url = new URL(endpoint);
@@ -55,52 +73,46 @@ public class StargateHelper {
             default:
                 throw new NotImplementedException("method not (yet?) implemented: "+method);
         }
-        conn.setRequestProperty("x-cassandra-request-id", UUID.randomUUID().toString());
         return conn;
     }
 
-    private static void generateAuthToken() throws IOException {
+    private static void generateAuthToken() throws IOException, URISyntaxException {
         ObjectNode node = mapper.createObjectNode();
         node.put("username", ASTRA_DB_USERNAME);
         node.put("password", ASTRA_DB_PASSWORD);
-        HttpURLConnection conn = astraConnect("POST", Endpoints.AUTH_TOKEN);
-        JsonNode ret = send(conn, node);
-        authToken = ret.get("authToken").asText();
-        conn.disconnect();
+        HttpPost auth = new HttpPost(new URI(Endpoints.AUTH_TOKEN));
+        auth.setHeader(HttpHeaders.ACCEPT, "*/*");
+        auth.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        auth.setHeader("x-cassandra-request-id", UUID.randomUUID().toString());
+        auth.setHeader("x-cassandra-token", authToken);
+        CloseableHttpResponse response = httpClient.execute(auth);
+        authToken = mapper.readTree(response.getEntity().getContent()).get("authToken").asText();
     }
 
-    private static JsonNode send(HttpURLConnection conn, JsonNode data) throws IOException {
-        System.out.println(data);
-        try(OutputStream os = conn.getOutputStream()) {
-            byte[] input = data.toString().getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
 
-        int responseCode = conn.getResponseCode();
-        if (responseCode / 100 != 2 && responseCode != 409 ) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                    + conn.getResponseCode());
-        }
-        return mapper.readTree(conn.getInputStream());
-    }
 
-    static JsonNode insert(JsonNode data, String collectionName, String docId) throws IOException {
+    static JsonNode insert(JsonNode data, String collectionName, String docId) throws IOException, URISyntaxException {
         if(authToken==null) generateAuthToken();
-        HttpURLConnection conn = astraConnect("PATCH", String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId));
-        conn.setRequestProperty("x-cassandra-token", authToken);
-        return send(conn, data);
+        HttpPatch insert = new HttpPatch(new URI(String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId)));
+        insert.setHeader(HttpHeaders.ACCEPT, "*/*");
+        insert.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        insert.setHeader("x-cassandra-request-id", UUID.randomUUID().toString());
+        insert.setHeader("x-cassandra-token", authToken);
+        insert.setEntity(new StringEntity(data.toString()));
+        CloseableHttpResponse response = httpClient.execute(insert);
+        InputStream cont = response.getEntity().getContent();
+        return mapper.readTree(cont);
     }
 
 
-    static JsonNode read(String collectionName, String docId) throws IOException {
-        HttpURLConnection conn = astraConnect("GET", String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId));
-        conn.setRequestProperty("x-cassandra-token", authToken);
-        int toto = conn.getResponseCode();
-        
-        if (conn.getResponseCode() / 100 != 2) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                    + conn.getResponseCode());
-        }
-        return mapper.readTree(conn.getInputStream());
+    static JsonNode read(String collectionName, String docId) throws IOException, URISyntaxException {
+        System.out.println(Endpoints.COLLECTIONS);
+        HttpGet httpGet = new HttpGet(new URI(String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId)));
+        httpGet.setHeader(HttpHeaders.ACCEPT, "*/*");
+        httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        httpGet.setHeader("x-cassandra-request-id", UUID.randomUUID().toString());
+        httpGet.setHeader("x-cassandra-token", authToken);
+        CloseableHttpResponse response = httpClient.execute(httpGet);
+        return mapper.readTree(response.getEntity().getContent());
     }
 }
