@@ -27,7 +27,7 @@ public abstract class TableValueInRangeRule extends Rule {
 
     @Override
     public String check() {
-        List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorageByToken(configName);
+        List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorage(configName);
         if(clusterConfigs == null || clusterConfigs.isEmpty())
             return "Rule " + ruleName + " is inconclusive due to lack of data!";
 
