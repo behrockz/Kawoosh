@@ -16,6 +16,7 @@ import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,7 +34,10 @@ public class Main {
         ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[1], args[2], args[3], args[4], parser.getClusterName());
         Rule r1 = new AutoBootStrapCheckRule(clusterConfigRetriver);
         Rule r2 = new AutoSnapshotCheckRule(clusterConfigRetriver);
-        Analyser analyser = new Analyser(List.of(r1, r2));
+        ArrayList<Rule> ruleList = new ArrayList<Rule> ();
+        ruleList.add(r1);
+        ruleList.add(r2);
+        Analyser analyser = new Analyser(ruleList);
         analyser.analyse().forEach(s -> System.out.println(s));
         System.out.println("Done!");
     }
