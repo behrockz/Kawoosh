@@ -73,4 +73,11 @@ public class ClusterConfig {
                 ", value='" + value + '\'' +
                 '}';
     }
+
+    public String PretyToString(){
+        return getNodeIp() + "->" +
+                getConfName() + ": " +
+               getValue();
+    }
+
 }

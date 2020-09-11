@@ -2,9 +2,7 @@ package com.datastax.kawoosh;
 
 import com.datastax.kawoosh.analyser.Analyser;
 import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
-import com.datastax.kawoosh.analyser.rules.AutoBootStrapCheckRule;
-import com.datastax.kawoosh.analyser.rules.AutoSnapshotCheckRule;
-import com.datastax.kawoosh.analyser.rules.Rule;
+import com.datastax.kawoosh.analyser.rules.*;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.ClusterConfigImpl;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
@@ -32,11 +30,16 @@ public class Main {
         parser.readDiag().forEach(conf -> storage.write(conf));
 
         ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[1], args[2], args[3], args[4], parser.getClusterName());
-        Rule r1 = new AutoBootStrapCheckRule(clusterConfigRetriver);
-        Rule r2 = new AutoSnapshotCheckRule(clusterConfigRetriver);
-        ArrayList<Rule> ruleList = new ArrayList<Rule> ();
-        ruleList.add(r1);
-        ruleList.add(r2);
+
+        List<Rule> ruleList = List.of(
+                new AutoBootStrapCheckRule(clusterConfigRetriver),
+                new AutoSnapshotCheckRule(clusterConfigRetriver),
+                new VnodeCheckRule(clusterConfigRetriver),
+                new ConcurrencyCheckRule(clusterConfigRetriver),
+                new CompactionCheckRule(clusterConfigRetriver),
+                new SeedListRule(clusterConfigRetriver),
+                new ClusterIdRule(clusterConfigRetriver)
+                );
         Analyser analyser = new Analyser(ruleList);
         analyser.analyse().forEach(s -> System.out.println(s));
         System.out.println("Done!");
