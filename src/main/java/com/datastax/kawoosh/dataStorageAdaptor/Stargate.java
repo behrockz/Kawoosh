@@ -51,9 +51,9 @@ public class Stargate implements DataStorage {
         ClusterConfig cg = new ClusterConfig("2020", "QUA1", "PLA1", "GRP1", "CL1", "IP1", "name1", "config1" , "val1");
 
         ClusterConfig cg2 = new ClusterConfig("2020", "QUA1", "PLA1", "GRP1", "CL1", "IP2", "name2", "config1" , "val2");
-        //sg.write(cg);
+        sg.write(cg);
 
-        //sg.write(cg2);
+        sg.write(cg2);
 
         List<ClusterConfig> t = sg.read("2020", "QUA1", "PLA1", "GRP1", "CL1", "config1");
         for(ClusterConfig c : t){

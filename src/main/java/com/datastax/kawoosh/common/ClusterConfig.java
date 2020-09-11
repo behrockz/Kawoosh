@@ -1,5 +1,7 @@
 package com.datastax.kawoosh.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ClusterConfig {
     String year;
     String quarter;
@@ -10,6 +12,9 @@ public class ClusterConfig {
     String filename;
     String confName;
     String value;
+
+    public ClusterConfig() {
+    }
 
     public ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
         this.year = year;
@@ -23,14 +28,17 @@ public class ClusterConfig {
         this.value = value;
     }
 
+    @JsonIgnore
     public String getCollectionName(){
         return String.format("%s_%s_%s_%s_%s", year, quarter, platform, group, clusterName);
     }
 
+    @JsonIgnore
     public String getId(){
         return confName;
     }
 
+    @JsonIgnore
     public String getPropertyName(){
         return nodeIp;
     }
