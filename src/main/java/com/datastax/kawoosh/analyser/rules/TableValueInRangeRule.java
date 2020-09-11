@@ -30,6 +30,12 @@ public abstract class TableValueInRangeRule extends Rule {
         List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorageByToken(configName);
         List<String> results= new ArrayList<String>();;
         clusterConfigs.forEach((cc) -> {if((Long.parseLong(cc.getValue())>maxValue) || (Long.parseLong(cc.getValue())<minValue)) {results.add("\n\t" + cc.toString());};});
+        if(results.size()>0){
+            results.add("Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") failed!");
+        }
+        else{
+            results.add("Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") passed!");
+        }
         return String.join("\n\t", results);
     }
 }

@@ -17,6 +17,7 @@ import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 
@@ -41,6 +42,7 @@ public class Main {
         ruleList.add(new SeedListRule(clusterConfigRetriver));
         ruleList.add(new ClusterIdRule(clusterConfigRetriver));
         ruleList.add(new LargePartitionCheckRule(clusterConfigRetriver));
+        ruleList.add(new NbOfSSTablesCheckRule(clusterConfigRetriver));
         Analyser analyser = new Analyser(ruleList);
         analyser.analyse().forEach(s -> System.out.println(s));
         System.out.println("Done!");
