@@ -20,6 +20,8 @@ public class RuleBook {
         rules.add(new ClusterIdRule(clusterConfigRetriver));
         rules.add(new LargePartitionCheckRule(clusterConfigRetriver));
         rules.add(new NbOfSSTablesCheckRule(clusterConfigRetriver));
+        rules.add(new TombstonesCheckRule(clusterConfigRetriver));
+        rules.add(new DroppedMutationsCheckRule(clusterConfigRetriver));
     }
 
     public Stream<Rule> getRules() {
