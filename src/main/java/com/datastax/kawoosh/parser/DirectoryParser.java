@@ -28,6 +28,10 @@ public abstract class DirectoryParser {
     Stream<IpPathPair> osInfos;
     Stream<IpPathPair> schemas;
 
+    public String getClusterName() {
+        return clusterName;
+    }
+
     public DirectoryParser(String rootPath,
                            ClusterConfigBuilder clusterConfigBuilder,
                            YamlReader yamlReader,
