@@ -14,15 +14,17 @@ Most important differentiators of Kawoosh are:
 ---
 # To Run
 You need to pass the following Input arguments if you need to upload a Diagnostic:
-0. Update
-1. Absolute path to the diagnostic folder. 
-2. Year (to identify the year the diagnostic tarball was collected)
-3. Quarter (To identify the quarter the diagnostic tarball was collected)
-4. Program (To identify which program this diagnostic tarball belongs to)
-5. Group (To identify which group this diagnostic tarball belongs to)
+
+1. Upload
+2. Absolute path to the diagnostic folder. 
+3. Year (to identify the year the diagnostic tarball was collected)
+4. Quarter (To identify the quarter the diagnostic tarball was collected)
+5. Program (To identify which program this diagnostic tarball belongs to)
+6. Group (To identify which group this diagnostic tarball belongs to)
 
 
 You need to pass the following Input arguments if you want to retrieve the report you have already uploaded:
+
 1. Report
 2. Year (to identify the year the diagnostic tarball was collected.)
 3. Quarter (To identify the quarter the diagnostic tarball was collected.)
