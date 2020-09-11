@@ -5,7 +5,7 @@ import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
 
-public class ClusterConfigRetriver {
+public class ClusterConfigRetriever {
     DataStorage dataStorage;
     String year;
     String quarter;
@@ -13,7 +13,7 @@ public class ClusterConfigRetriver {
     String group;
     String clusterName;
 
-    public ClusterConfigRetriver(DataStorage dataStorage, String year, String quarter, String platform, String group, String clusterName) {
+    public ClusterConfigRetriever(DataStorage dataStorage, String year, String quarter, String platform, String group, String clusterName) {
         this.dataStorage = dataStorage;
     }
 

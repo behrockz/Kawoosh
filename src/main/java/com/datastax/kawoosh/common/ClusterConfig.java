@@ -11,7 +11,7 @@ public class ClusterConfig {
     String confName;
     String value;
 
-    ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
+    public ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
         this.year = year;
         this.quarter = quarter;
         this.platform = platform;
@@ -24,7 +24,7 @@ public class ClusterConfig {
     }
 
     public String getCollectionName(){
-        return String.format("{0}-{1}-{2}-{3}-{4}", year, quarter, platform, group, clusterName);
+        return String.format("%s_%s_%s_%s_%s", year, quarter, platform, group, clusterName);
     }
 
     public String getId(){

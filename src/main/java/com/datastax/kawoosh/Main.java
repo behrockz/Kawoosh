@@ -1,11 +1,7 @@
 package com.datastax.kawoosh;
 
 import com.datastax.kawoosh.analyser.Analyser;
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
-import com.datastax.kawoosh.analyser.rules.AutoBootStrapCheckRule;
-import com.datastax.kawoosh.analyser.rules.AutoSnapshotCheckRule;
-import com.datastax.kawoosh.analyser.rules.LargePartitionCheckRule;
-import com.datastax.kawoosh.analyser.rules.Rule;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.analyser.rules.*;
 import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.ClusterConfigImpl;
@@ -16,9 +12,6 @@ import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
 import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
-
-import java.net.ServerSocket;
-import java.util.ArrayList;
 
 
 public class Main {
@@ -39,7 +32,7 @@ public class Main {
             DirectoryParser parser = new OpsCenterGeneratedDiag(args[1], builder, yamlReader, tableStatReader, clusterInfoReader);
             parser.readDiag().forEach(conf -> storage.write(conf));
         } else if(args[0].equals("Report")){
-            ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[1], args[2], args[3], args[4], args[5]);
+            ClusterConfigRetriever clusterConfigRetriver = new ClusterConfigRetriever(storage, args[1], args[2], args[3], args[4], args[5]);
             RuleBook ruleBook = new RuleBook(clusterConfigRetriver);
             Analyser analyser = new Analyser(ruleBook);
             analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
@@ -47,7 +40,7 @@ public class Main {
             ClusterConfigBuilder builder = new ClusterConfigImpl(args[2], args[3], args[4], args[5]);
             DirectoryParser parser = new OpsCenterGeneratedDiag(args[1], builder, yamlReader, tableStatReader, clusterInfoReader);
             parser.readDiag().forEach(conf -> storage.write(conf));
-            ClusterConfigRetriver clusterConfigRetriver = new ClusterConfigRetriver(storage, args[2], args[3], args[4], args[5], parser.getClusterName());
+            ClusterConfigRetriever clusterConfigRetriver = new ClusterConfigRetriever(storage, args[2], args[3], args[4], args[5], parser.getClusterName());
             RuleBook ruleBook = new RuleBook(clusterConfigRetriver);
             Analyser analyser = new Analyser(ruleBook);
             analyser.analyse().forEach(s -> System.out.println("***********\n" + s));

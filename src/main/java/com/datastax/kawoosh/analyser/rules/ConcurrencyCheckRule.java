@@ -1,12 +1,11 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class ConcurrencyCheckRule extends AggregatorRule {
-    public ConcurrencyCheckRule(ClusterConfigRetriver clusterConfigRetriver) {
+    public ConcurrencyCheckRule(ClusterConfigRetriever clusterConfigRetriver) {
         super(clusterConfigRetriver, "Concurrency Check",
                 Arrays.asList(new String[]{"concurrent_reads",
                         "concurrent_writes",

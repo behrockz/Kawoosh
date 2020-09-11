@@ -1,12 +1,11 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriver;
+import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class ClusterIdRule extends AggregatorRule {
-    public ClusterIdRule(ClusterConfigRetriver clusterConfigRetriver) {
+    public ClusterIdRule(ClusterConfigRetriever clusterConfigRetriver) {
         super(clusterConfigRetriver, "ClusterId",
 
                 Arrays.asList(new String[]{"bdp_version",
