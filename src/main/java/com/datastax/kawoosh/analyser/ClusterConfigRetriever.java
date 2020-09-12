@@ -15,6 +15,11 @@ public class ClusterConfigRetriever {
 
     public ClusterConfigRetriever(DataStorage dataStorage, String year, String quarter, String platform, String group, String clusterName) {
         this.dataStorage = dataStorage;
+        this.year = year;
+        this.quarter = quarter;
+        this.platform = platform;
+        this.group = group;
+        this.clusterName = clusterName;
     }
 
     public List<ClusterConfig> queryStorage(String confName) {

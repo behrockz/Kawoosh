@@ -39,22 +39,8 @@ public class ClusterConfig {
     }
 
     @JsonIgnore
-    public String getPropertyName(){
+    public String getPropertyName() {
         return nodeIp;
-
-    public ClusterConfig(){}
-
-
-    public ClusterConfig(String year, String quarter, String platform, String group, String clusterName, String nodeIp, String filename, String confName, String value) {
-        this.setYear(year);
-        this.setQuarter(quarter);
-        this.setPlatform(platform);
-        this.setGroup(group);
-        this.setClusterName(clusterName);
-        this.setNodeIp(nodeIp);
-        this.setFilename(filename);
-        this.setConfName(confName);
-        this.setValue(value);
     }
 
     public String getYear() {

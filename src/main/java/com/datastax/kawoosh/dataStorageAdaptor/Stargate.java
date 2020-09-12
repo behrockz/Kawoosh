@@ -20,7 +20,9 @@ public class Stargate implements DataStorage {
         List<ClusterConfig> list = Lists.newArrayList();
         String collectionName = String.format("%s_%s_%s_%s_%s", year, quarter, platform, group, clusterName);
         try {
-            ObjectNode read = (ObjectNode) StargateHelper.read(collectionName, confName);
+            ObjectNode read = (ObjectNode) StargateHelper.read(collectionName, confName.replaceAll(" ", "_"));
+            if(read == null)
+                return list;
             JsonNode data = read.get("data");
             for(Iterator<String> it = data.fieldNames(); it.hasNext(); ) {
                 String field = it.next();
@@ -37,10 +39,10 @@ public class Stargate implements DataStorage {
     public void write(ClusterConfig conf) {
         try {
             JsonNode jnode = StargateHelper.mapper.createObjectNode()
-                    .set(conf.getNodeIp(),StargateHelper.mapper.valueToTree(conf));
-
+                    .set(conf.getNodeIp().replaceAll(".", "+"),StargateHelper.mapper.valueToTree(conf));
+            System.out.println(conf.PretyToString());
             String collectionName = String.format("%s_%s_%s_%s_%s", conf.getYear(), conf.getQuarter(), conf.getPlatform(), conf.getGroup(), conf.getClusterName());
-            StargateHelper.insert(jnode, collectionName, conf.getConfName());
+            StargateHelper.insert(jnode, collectionName, conf.getConfName().replaceAll(" ", "_"));
         } catch(IOException | URISyntaxException e) {
             e.printStackTrace();
         }

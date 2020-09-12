@@ -7,6 +7,7 @@ import com.datastax.kawoosh.common.ClusterConfigBuilder;
 import com.datastax.kawoosh.common.ClusterConfigImpl;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.MapStorage;
+import com.datastax.kawoosh.dataStorageAdaptor.Stargate;
 import com.datastax.kawoosh.parser.DirectoryParser;
 import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
 import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
@@ -20,7 +21,7 @@ public class Main {
         YamlReader yamlReader = new YamlReader();
         TableStatReader tableStatReader = new TableStatReader();
         ClusterInfoReader clusterInfoReader = new ClusterInfoReader();
-        DataStorage storage = new MapStorage();
+        DataStorage storage = new Stargate();
 
         if(args[0].equals("Upload")){
             ClusterConfigBuilder builder = new ClusterConfigImpl(args[2], args[3], args[4], args[5]);

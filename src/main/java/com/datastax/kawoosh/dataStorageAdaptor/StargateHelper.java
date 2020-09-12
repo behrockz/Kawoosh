@@ -1,17 +1,18 @@
 package com.datastax.kawoosh.dataStorageAdaptor;
 
+import com.datastax.kawoosh.parser.fileReader.Reader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
@@ -25,6 +26,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.yaml.snakeyaml.reader.StreamReader;
 
 public class StargateHelper {
 
@@ -101,18 +103,41 @@ public class StargateHelper {
         insert.setEntity(new StringEntity(data.toString()));
         CloseableHttpResponse response = httpClient.execute(insert);
         InputStream cont = response.getEntity().getContent();
-        return mapper.readTree(cont);
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader
+                (cont, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        }
+
+        return mapper.readTree(textBuilder.toString());
     }
 
 
     static JsonNode read(String collectionName, String docId) throws IOException, URISyntaxException {
-        System.out.println(Endpoints.COLLECTIONS);
+        // System.out.println(Endpoints.COLLECTIONS);
         HttpGet httpGet = new HttpGet(new URI(String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId)));
         httpGet.setHeader(HttpHeaders.ACCEPT, "*/*");
         httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
         httpGet.setHeader("x-cassandra-request-id", UUID.randomUUID().toString());
         httpGet.setHeader("x-cassandra-token", authToken);
         CloseableHttpResponse response = httpClient.execute(httpGet);
-        return mapper.readTree(response.getEntity().getContent());
+
+        if(response.getEntity() == null)
+            return null;
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntity().getContent(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        }
+
+        return mapper.readTree(textBuilder.toString());
     }
 }
