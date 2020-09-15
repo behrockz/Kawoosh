@@ -8,14 +8,14 @@ public class ClusterIdRule extends AggregatorRule {
     public ClusterIdRule(ClusterConfigRetriever clusterConfigRetriver) {
         super(clusterConfigRetriver, "ClusterId",
 
-                Arrays.asList(new String[]{"bdp_version",
+                Arrays.asList("bdp_version",
                         "cassandra_versions",
                         "cluster_cores",
                         "cluster_os",
                         "cluster_ram",
                         "dc_count",
                         "node_count",
-                        "opscenter_version"})
+                        "opscenter_version")
 
 
         );

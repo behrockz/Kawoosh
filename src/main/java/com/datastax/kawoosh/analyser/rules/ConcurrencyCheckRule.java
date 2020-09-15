@@ -7,10 +7,10 @@ import java.util.Arrays;
 public class ConcurrencyCheckRule extends AggregatorRule {
     public ConcurrencyCheckRule(ClusterConfigRetriever clusterConfigRetriver) {
         super(clusterConfigRetriver, "Concurrency Check",
-                Arrays.asList(new String[]{"concurrent_reads",
+                Arrays.asList("concurrent_reads",
                         "concurrent_writes",
                         "concurrent_counter_writes",
-                        "concurrent_materialized_view_writes"})
+                        "concurrent_materialized_view_writes")
 
         );
     }

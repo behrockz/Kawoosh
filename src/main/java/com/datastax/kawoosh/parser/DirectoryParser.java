@@ -1,7 +1,6 @@
 package com.datastax.kawoosh.parser;
 
-import com.datastax.kawoosh.common.ClusterConfig;
-import com.datastax.kawoosh.common.ClusterConfigBuilder;
+import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
 import com.datastax.kawoosh.parser.fileReader.Reader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
@@ -11,7 +10,6 @@ import java.util.stream.Stream;
 
 public abstract class DirectoryParser {
     String rootPath;
-    ClusterConfigBuilder clusterConfigBuilder;
     YamlReader yamlReader;
     TableStatReader tableStatReader;
 
@@ -33,19 +31,17 @@ public abstract class DirectoryParser {
     }
 
     public DirectoryParser(String rootPath,
-                           ClusterConfigBuilder clusterConfigBuilder,
                            YamlReader yamlReader,
                            TableStatReader tableStatReader) {
         this.rootPath = rootPath;
-        this.clusterConfigBuilder = clusterConfigBuilder;
         this.yamlReader = yamlReader;
         this.tableStatReader = tableStatReader;
     }
 
-    public Stream<ClusterConfig> readDiag(){
-        Stream<ClusterConfig> cassandraYamlsResults = parseTheFiles(yamlReader, cassandraYamls);
-        Stream<ClusterConfig> dseYamlsResults = parseTheFiles(yamlReader, dseYamls);
-        Stream<ClusterConfig> tableStatsResult = parseTheFiles(tableStatReader, tableStats);
+    public Stream<Config> readDiag(){
+        Stream<Config> cassandraYamlsResults = parseTheFiles(yamlReader, cassandraYamls);
+        Stream<Config> dseYamlsResults = parseTheFiles(yamlReader, dseYamls);
+        Stream<Config> tableStatsResult = parseTheFiles(tableStatReader, tableStats);
 
         return Stream.of(
                 cassandraYamlsResults,
@@ -54,9 +50,9 @@ public abstract class DirectoryParser {
                 .flatMap(c -> c);
     }
 
-    protected Stream<ClusterConfig> parseTheFiles(Reader reader, Stream<IpPathPair> files){
+    protected Stream<Config> parseTheFiles(Reader reader, Stream<IpPathPair> files){
         return files.flatMap( f -> reader.read(f.getPath()).map(entry ->
-                clusterConfigBuilder.Build(clusterName,
+                new Config(
                         f.getIp() + ": " + entry.getValue3(),
                         f.getRelativePath(),
                         entry.getValue1(),

@@ -1,7 +1,7 @@
 package com.datastax.kawoosh.analyser.rules;
 
 import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
-import com.datastax.kawoosh.common.ClusterConfig;
+import com.datastax.kawoosh.common.Config;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,14 +19,14 @@ public abstract class AllEqualRule extends Rule {
 
     @Override
     public String check() {
-        List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorage(configName);
+        List<Config> clusterConfigs = clusterConfigRetriver.queryStorage(configName);
         long count = clusterConfigs.stream().map(c -> c.getValue()).distinct().count();
         if(count == 1)
             return "Rule " + ruleName + " returned success!";
 
         String result = "Rule " + ruleName + " returns failure. The values are:\n\t";
         result += String.join("\n\t", clusterConfigs.stream()
-                .map(clusterConfig -> clusterConfig.PretyToString())
+                .map(clusterConfig -> clusterConfig.toString())
                 .collect(Collectors.toList()));
         return result;
     }

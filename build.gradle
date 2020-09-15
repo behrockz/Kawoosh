@@ -18,7 +18,12 @@ dependencies {
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.11.2'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.6.2'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.10'
-
+    compile group: 'com.datastax.oss', name: 'java-driver-core', version: '4.9.0'
+    compile group: 'com.datastax.oss', name: 'java-driver-query-builder', version: '4.9.0'
+    annotationProcessor group: 'com.datastax.oss', name: 'java-driver-mapper-processor', version: '4.9.0'
+    compile group: 'com.datastax.oss', name: 'java-driver-mapper-runtime', version: '4.9.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.3'
 }
 
 test {

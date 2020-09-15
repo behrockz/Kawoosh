@@ -1,11 +1,18 @@
 package com.datastax.kawoosh.dataStorageAdaptor;
 
-import com.datastax.kawoosh.common.ClusterConfig;
+import com.datastax.kawoosh.common.Cluster;
+import com.datastax.kawoosh.common.Config;
 
 import java.util.List;
 
-public interface DataStorage {
-    List<ClusterConfig> read(String year, String quarter, String platform, String group, String clusterName, String confName);
+public abstract class DataStorage {
+    protected Cluster cluster;
 
-    void write(ClusterConfig conf);
+    public DataStorage(Cluster cluster) {
+        this.cluster = cluster;
+    }
+
+    public abstract List<Config> read(String confName);
+
+    public abstract void write(Config conf);
 }

@@ -1,7 +1,6 @@
 package com.datastax.kawoosh.parser;
 
-import com.datastax.kawoosh.common.ClusterConfig;
-import com.datastax.kawoosh.common.ClusterConfigBuilder;
+import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
 import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
@@ -19,12 +18,10 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
     Stream<IpPathPair> clusterInfo;
 
     public OpsCenterGeneratedDiag(String rootPath,
-                                  ClusterConfigBuilder clusterConfigBuilder,
                                   YamlReader yamlReader,
                                   TableStatReader tableStatReader,
                                   ClusterInfoReader clusterInfoReader) {
         super(rootPath,
-                clusterConfigBuilder,
                 yamlReader,
                 tableStatReader);
         this.clusterInfoReader = clusterInfoReader;
@@ -54,20 +51,20 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
     }
 
     @Override
-    public Stream<ClusterConfig> readDiag() {
+    public Stream<Config> readDiag() {
         File root = new File(rootPath);
         clusterName = root.getName().substring(0, root.getName().indexOf('-'));
         List<String> files = Arrays.stream(root.listFiles())
                 .map(f -> f.getName())
                 .collect(Collectors.toList());
-        Stream.Builder<ClusterConfig> streamBuilder = Stream.builder();
+        Stream.Builder<Config> streamBuilder = Stream.builder();
 
         if(files.contains("opscenterd"))
-            streamBuilder.add(clusterConfigBuilder.Build(clusterName, "", root.getName(), "OpsCenter", "True"));
+            streamBuilder.add(new Config( "", root.getName(), "OpsCenter", "True"));
 
 
-        Stream<ClusterConfig> clusterInfoResult = parseTheFiles(clusterInfoReader, clusterInfo);
-        Stream<ClusterConfig> superResult = super.readDiag();
+        Stream<Config> clusterInfoResult = parseTheFiles(clusterInfoReader, clusterInfo);
+        Stream<Config> superResult = super.readDiag();
         return Stream.of(streamBuilder.build(),
                 clusterInfoResult,
                 superResult

@@ -1,10 +1,11 @@
 package com.datastax.kawoosh.analyser.rules;
 
 import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
-import com.datastax.kawoosh.common.ClusterConfig;
+import com.datastax.kawoosh.common.Config;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class TableValueInRangeRule extends Rule {
     protected String ruleName;
@@ -26,12 +27,16 @@ public abstract class TableValueInRangeRule extends Rule {
 
     @Override
     public String check() {
-        List<ClusterConfig> clusterConfigs = clusterConfigRetriver.queryStorage(configName);
-        if(clusterConfigs == null || clusterConfigs.isEmpty())
+        List<Config> configs = clusterConfigRetriver.queryStorage(configName);
+        if(configs == null || configs.isEmpty())
             return "Rule " + ruleName + " is inconclusive due to lack of data!";
 
-        List<String> results= new ArrayList<>();;
-        clusterConfigs.forEach((cc) -> {if((Double.parseDouble(cc.getValue())>maxValue) || (Double.parseDouble(cc.getValue())<minValue)) {results.add("\n\t" + cc.PretyToString());};});
+        List<String> results = configs.stream()
+                .filter(Objects::isNull)
+                .filter(c -> (Double.parseDouble(c.getValue())>maxValue)
+                || (Double.parseDouble(c.getValue())<minValue))
+                .map(c -> c.toString())
+                .collect(Collectors.toList());
 
         if(results.isEmpty())
             return "Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") returns success!";

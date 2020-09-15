@@ -1,6 +1,5 @@
-package com.datastax.kawoosh.dataStorageAdaptor;
+package com.datastax.kawoosh.dataStorageAdaptor.stargate;
 
-import com.datastax.kawoosh.parser.fileReader.Reader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -25,8 +23,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.yaml.snakeyaml.reader.StreamReader;
 
 public class StargateHelper {
 
@@ -39,8 +35,8 @@ public class StargateHelper {
         public static String COLLECTIONS = String.format("%s/api/rest/v2/namespaces/%s/collections", ASTRA_URL, ASTRA_DB_NS);
     }
 
-    private static final String ASTRA_CLUSTER_ID = "f2aa8aba-0308-4caf-a96e-b37d9c343f94";
-    private static final String ASTRA_CLUSTER_REGION = "us-east1";
+    private static final String ASTRA_CLUSTER_ID = "6ec8bebd-96f5-4cf5-983b-47eed9b3cbc0";
+    private static final String ASTRA_CLUSTER_REGION = "europe-west1";
     private static final String ASTRA_DB_USERNAME = "kawoosh";
     private static final String ASTRA_DB_NS = "kawoosh";
     private static final String ASTRA_DB_PASSWORD = "kawoosh";
@@ -48,7 +44,7 @@ public class StargateHelper {
     public static final String ASTRA_URL =
             String.format("https://%s-%s.apps.astra.datastax.com", ASTRA_CLUSTER_ID, ASTRA_CLUSTER_REGION);
 
-    private static String authToken = "9ecb22a6-199f-4427-ab38-730834790865";
+    private static String authToken = "2575d3d7-1d58-43e1-9416-daf8e7f31697";
 
     private static CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -90,8 +86,6 @@ public class StargateHelper {
         CloseableHttpResponse response = httpClient.execute(auth);
         authToken = mapper.readTree(response.getEntity().getContent()).get("authToken").asText();
     }
-
-
 
     static JsonNode insert(JsonNode data, String collectionName, String docId) throws IOException, URISyntaxException {
         if(authToken==null) generateAuthToken();

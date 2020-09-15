@@ -1,7 +1,7 @@
 package com.datastax.kawoosh.analyser.rules;
 
 import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
-import com.datastax.kawoosh.common.ClusterConfig;
+import com.datastax.kawoosh.common.Config;
 
 import java.util.Comparator;
 import java.util.List;
@@ -21,12 +21,12 @@ public abstract class AggregatorRule extends Rule {
 
     @Override
     public String check() {
-        Stream<ClusterConfig> sorted = configNames.stream().map(c -> clusterConfigRetriver.queryStorage(c))
+        Stream<Config> sorted = configNames.stream().map(c -> clusterConfigRetriver.queryStorage(c))
                 .flatMap(c -> c == null? Stream.empty() : c.stream())
-                .sorted(Comparator.comparing(ClusterConfig::getNodeIp));
+                .sorted(Comparator.comparing(Config::getNodeIp));
         String result = "Rule " + ruleName + " returns inconclusive result. The values are:\n\t";
         result += String.join("\n\t", sorted
-                .map(clusterConfig -> clusterConfig.PretyToString())
+                .map(clusterConfig -> clusterConfig.toString())
                 .collect(Collectors.toList()));
         return result;
     }

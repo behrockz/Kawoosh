@@ -1,7 +1,5 @@
 package com.datastax.kawoosh.common;
 
-import java.io.File;
-
 public class IpPathPair {
     String ip;
     String path;
