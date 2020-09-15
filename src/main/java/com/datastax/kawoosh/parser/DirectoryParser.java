@@ -2,6 +2,7 @@ package com.datastax.kawoosh.parser;
 
 import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
+import com.datastax.kawoosh.parser.fileReader.DescribeClusterReader;
 import com.datastax.kawoosh.parser.fileReader.Reader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
@@ -12,16 +13,17 @@ public abstract class DirectoryParser {
     String rootPath;
     YamlReader yamlReader;
     TableStatReader tableStatReader;
+    DescribeClusterReader describeClusterReader;
 
     String nodesPath;
     String clusterName;
     Stream<IpPathPair> cassandraYamls;
     Stream<IpPathPair> dseYamls;
     Stream<IpPathPair> tableStats;
+    Stream<IpPathPair> describeClusters;
     Stream<IpPathPair> versions;
     Stream<IpPathPair> nodetoolStatuses;
     Stream<IpPathPair> cassandraEnvs;
-    Stream<IpPathPair> describeClusters;
     Stream<IpPathPair> ntpStats;
     Stream<IpPathPair> osInfos;
     Stream<IpPathPair> schemas;
@@ -32,21 +34,25 @@ public abstract class DirectoryParser {
 
     public DirectoryParser(String rootPath,
                            YamlReader yamlReader,
-                           TableStatReader tableStatReader) {
+                           TableStatReader tableStatReader,
+                           DescribeClusterReader describeClusterReader) {
         this.rootPath = rootPath;
         this.yamlReader = yamlReader;
         this.tableStatReader = tableStatReader;
+        this.describeClusterReader = describeClusterReader;
     }
 
     public Stream<Config> readDiag(){
         Stream<Config> cassandraYamlsResults = parseTheFiles(yamlReader, cassandraYamls);
         Stream<Config> dseYamlsResults = parseTheFiles(yamlReader, dseYamls);
         Stream<Config> tableStatsResult = parseTheFiles(tableStatReader, tableStats);
+        Stream<Config> describeClusterResults = parseTheFiles(describeClusterReader, describeClusters);
 
         return Stream.of(
                 cassandraYamlsResults,
                 dseYamlsResults,
-                tableStatsResult)
+                tableStatsResult,
+                describeClusterResults)
                 .flatMap(c -> c);
     }
 

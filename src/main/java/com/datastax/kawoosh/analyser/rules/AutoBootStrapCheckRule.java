@@ -1,9 +1,9 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
+import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 public class AutoBootStrapCheckRule extends SpecificValueForAconfigRule {
-    public AutoBootStrapCheckRule(ClusterConfigRetriever clusterConfigRetriver) {
-        super(clusterConfigRetriver, "Auto Bootstrap", "auto_bootstrap", "true");
+    public AutoBootStrapCheckRule(DataStorage storage) {
+        super(storage, "Auto Bootstrap", "auto_bootstrap", "true");
     }
 }

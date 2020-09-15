@@ -1,9 +1,10 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
+
+import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 public class LargePartitionCheckRule extends TableValueInRangeRule {
-    public LargePartitionCheckRule(ClusterConfigRetriever clusterConfigRetriver) {
-        super(clusterConfigRetriver, "Large Partition", "Compacted partition maximum bytes",  0d, 100000000d);
+    public LargePartitionCheckRule(DataStorage storage) {
+        super(storage, "Large Partition", "Compacted partition maximum bytes",  0d, 100000000d);
     }
 }

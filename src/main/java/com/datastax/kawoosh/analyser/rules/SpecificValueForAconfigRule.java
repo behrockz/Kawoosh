@@ -1,7 +1,7 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.common.Config;
+import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,11 +11,11 @@ public abstract class SpecificValueForAconfigRule extends Rule {
     protected String configName;
     protected String expectedValue;
 
-    public SpecificValueForAconfigRule(ClusterConfigRetriever clusterConfigRetriver,
+    public SpecificValueForAconfigRule(DataStorage storage,
                                        String ruleName,
                                        String configName,
                                        String expectedValue) {
-        super(clusterConfigRetriver);
+        super(storage);
         this.ruleName = ruleName;
         this.configName = configName;
         this.expectedValue = expectedValue;
@@ -23,7 +23,7 @@ public abstract class SpecificValueForAconfigRule extends Rule {
 
     @Override
     public String check() {
-        List<Config> clusterConfigs = clusterConfigRetriver.queryStorage(configName);
+        List<Config> clusterConfigs = storage.read(configName);
         if (clusterConfigs == null ||
                 clusterConfigs.isEmpty() ||
                 clusterConfigs.stream().allMatch(cc -> cc.getValue().toLowerCase().equals(expectedValue)))

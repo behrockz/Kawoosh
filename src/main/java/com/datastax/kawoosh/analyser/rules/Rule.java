@@ -1,12 +1,12 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
+import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 public abstract class Rule {
-    protected ClusterConfigRetriever clusterConfigRetriver;
+    protected DataStorage storage;
 
-    public Rule(ClusterConfigRetriever clusterConfigRetriver) {
-        this.clusterConfigRetriver = clusterConfigRetriver;
+    public Rule(DataStorage storage) {
+        this.storage = storage;
     }
 
     public abstract String check();

@@ -3,6 +3,7 @@ package com.datastax.kawoosh.parser;
 import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
 import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
+import com.datastax.kawoosh.parser.fileReader.DescribeClusterReader;
 import com.datastax.kawoosh.parser.fileReader.TableStatReader;
 import com.datastax.kawoosh.parser.fileReader.YamlReader;
 
@@ -20,10 +21,12 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
     public OpsCenterGeneratedDiag(String rootPath,
                                   YamlReader yamlReader,
                                   TableStatReader tableStatReader,
-                                  ClusterInfoReader clusterInfoReader) {
+                                  ClusterInfoReader clusterInfoReader,
+                                  DescribeClusterReader describeClusterReader) {
         super(rootPath,
                 yamlReader,
-                tableStatReader);
+                tableStatReader,
+                describeClusterReader);
         this.clusterInfoReader = clusterInfoReader;
 
         nodesPath = rootPath + File.separator + "nodes";
@@ -32,6 +35,7 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         cassandraYamls = groupFiles(nodesPath, nodes, "conf/cassandra/cassandra.yaml");
         dseYamls = groupFiles(nodesPath, nodes, "conf/dse/dse.yaml");
         tableStats = groupFiles(nodesPath, nodes, "nodetool/cfstats");
+        describeClusters = groupFiles(nodesPath, nodes, "nodetool/describecluster");
 
         clusterInfo = groupFiles(rootPath, new String[]{ "" }, "cluster_info.json");
     }

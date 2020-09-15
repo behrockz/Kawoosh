@@ -1,7 +1,7 @@
 package com.datastax.kawoosh.analyser.rules;
 
-import com.datastax.kawoosh.analyser.ClusterConfigRetriever;
 import com.datastax.kawoosh.common.Config;
+import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,12 +13,12 @@ public abstract class TableValueInRangeRule extends Rule {
     protected Double minValue;
     protected Double maxValue;
 
-    public TableValueInRangeRule(ClusterConfigRetriever clusterConfigRetriver,
+    public TableValueInRangeRule(DataStorage storage,
                                  String ruleName,
                                  String configName,
                                  Double minValue,
                                  Double maxValue) {
-        super(clusterConfigRetriver);
+        super(storage);
         this.ruleName = ruleName;
         this.configName = configName;
         this.minValue = minValue;
@@ -27,7 +27,7 @@ public abstract class TableValueInRangeRule extends Rule {
 
     @Override
     public String check() {
-        List<Config> configs = clusterConfigRetriver.queryStorage(configName);
+        List<Config> configs = storage.read(configName);
         if(configs == null || configs.isEmpty())
             return "Rule " + ruleName + " is inconclusive due to lack of data!";
 
