@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,7 +30,8 @@ public class DescribeClusterReader implements Reader {
                     String ips = split[1].trim();
                     ips = ips.substring(1, ips.length()-1);
                     ips = Arrays.stream(ips.split(",")).sorted().collect(Collectors.joining(", "));
-                    stream.add(new Tuple("Schema versions", String.format("{0}, <{1}>", version, ips)));
+                    ips = String.format("%s, %s", version, ips);
+                    stream.add(new Tuple("Schema versions", ips));
                 }
             }
         } catch (IOException e) {

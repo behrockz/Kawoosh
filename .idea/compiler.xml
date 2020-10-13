@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="USE_RELEASE_OPTION" value="false" />
     <annotationProcessing>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.datastax.oss/java-driver-mapper-processor/4.9.0/9b7dd24a6a81bed22791e28636e08c3140eded67/java-driver-mapper-processor-4.9.0.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.14/bdc3e8dee0b300d3fd9414678fb9ddb42d5e20fb/lombok-1.18.14.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.datastax.oss/java-driver-mapper-runtime/4.9.0/de7a674ef586fab4061627cd9c2192d8a797976c/java-driver-mapper-runtime-4.9.0.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.datastax.oss/java-driver-query-builder/4.9.0/196b2644d3e82bb413bf85cbfe22c9b5007ed4a7/java-driver-query-builder-4.9.0.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.datastax.oss/java-driver-core/4.9.0/3f94f05faae71398e7f143dbd8634b94133d3bf3/java-driver-core-4.9.0.jar" />

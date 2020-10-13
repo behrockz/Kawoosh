@@ -35,7 +35,7 @@ public class StargateHelper {
         public static String COLLECTIONS = String.format("%s/api/rest/v2/namespaces/%s/collections", ASTRA_URL, ASTRA_DB_NS);
     }
 
-    private static final String ASTRA_CLUSTER_ID = "6ec8bebd-96f5-4cf5-983b-47eed9b3cbc0";
+    private static final String ASTRA_CLUSTER_ID = "00a5a2bd-9a92-4bbc-be31-7a32ed9c7172";
     private static final String ASTRA_CLUSTER_REGION = "europe-west1";
     private static final String ASTRA_DB_USERNAME = "kawoosh";
     private static final String ASTRA_DB_NS = "kawoosh";
@@ -44,7 +44,7 @@ public class StargateHelper {
     public static final String ASTRA_URL =
             String.format("https://%s-%s.apps.astra.datastax.com", ASTRA_CLUSTER_ID, ASTRA_CLUSTER_REGION);
 
-    private static String authToken = "2575d3d7-1d58-43e1-9416-daf8e7f31697";
+    private static String authToken = null;
 
     private static CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -82,7 +82,7 @@ public class StargateHelper {
         auth.setHeader(HttpHeaders.ACCEPT, "*/*");
         auth.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
         auth.setHeader("x-cassandra-request-id", UUID.randomUUID().toString());
-        auth.setHeader("x-cassandra-token", authToken);
+        auth.setEntity(new StringEntity(node.toString()));
         CloseableHttpResponse response = httpClient.execute(auth);
         authToken = mapper.readTree(response.getEntity().getContent()).get("authToken").asText();
     }
@@ -113,6 +113,7 @@ public class StargateHelper {
 
     static JsonNode read(String collectionName, String docId) throws IOException, URISyntaxException {
         // System.out.println(Endpoints.COLLECTIONS);
+        docId = docId.replaceAll(" ", "_");
         HttpGet httpGet = new HttpGet(new URI(String.format("%s/%s/%s", Endpoints.COLLECTIONS, collectionName, docId)));
         httpGet.setHeader(HttpHeaders.ACCEPT, "*/*");
         httpGet.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");

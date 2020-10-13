@@ -2,10 +2,7 @@ package com.datastax.kawoosh.parser;
 
 import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
-import com.datastax.kawoosh.parser.fileReader.DescribeClusterReader;
-import com.datastax.kawoosh.parser.fileReader.Reader;
-import com.datastax.kawoosh.parser.fileReader.TableStatReader;
-import com.datastax.kawoosh.parser.fileReader.YamlReader;
+import com.datastax.kawoosh.parser.fileReader.*;
 
 import java.util.stream.Stream;
 
@@ -14,6 +11,7 @@ public abstract class DirectoryParser {
     YamlReader yamlReader;
     TableStatReader tableStatReader;
     DescribeClusterReader describeClusterReader;
+    DotShReader dotShReader;
 
     String nodesPath;
     String clusterName;
@@ -35,11 +33,13 @@ public abstract class DirectoryParser {
     public DirectoryParser(String rootPath,
                            YamlReader yamlReader,
                            TableStatReader tableStatReader,
-                           DescribeClusterReader describeClusterReader) {
+                           DescribeClusterReader describeClusterReader,
+                           DotShReader dotShReader) {
         this.rootPath = rootPath;
         this.yamlReader = yamlReader;
         this.tableStatReader = tableStatReader;
         this.describeClusterReader = describeClusterReader;
+        this.dotShReader = dotShReader;
     }
 
     public Stream<Config> readDiag(){
@@ -47,12 +47,15 @@ public abstract class DirectoryParser {
         Stream<Config> dseYamlsResults = parseTheFiles(yamlReader, dseYamls);
         Stream<Config> tableStatsResult = parseTheFiles(tableStatReader, tableStats);
         Stream<Config> describeClusterResults = parseTheFiles(describeClusterReader, describeClusters);
+        Stream<Config> casssandraEnvsResult = parseTheFiles(dotShReader, cassandraEnvs);
+
 
         return Stream.of(
                 cassandraYamlsResults,
                 dseYamlsResults,
                 tableStatsResult,
-                describeClusterResults)
+                describeClusterResults,
+                casssandraEnvsResult)
                 .flatMap(c -> c);
     }
 

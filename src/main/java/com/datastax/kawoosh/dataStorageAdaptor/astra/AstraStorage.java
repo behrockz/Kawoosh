@@ -16,6 +16,7 @@ import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 public class AstraStorage extends DataStorage {

@@ -2,10 +2,7 @@ package com.datastax.kawoosh.parser;
 
 import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
-import com.datastax.kawoosh.parser.fileReader.ClusterInfoReader;
-import com.datastax.kawoosh.parser.fileReader.DescribeClusterReader;
-import com.datastax.kawoosh.parser.fileReader.TableStatReader;
-import com.datastax.kawoosh.parser.fileReader.YamlReader;
+import com.datastax.kawoosh.parser.fileReader.*;
 
 import java.io.File;
 import java.util.Arrays;
@@ -22,11 +19,13 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
                                   YamlReader yamlReader,
                                   TableStatReader tableStatReader,
                                   ClusterInfoReader clusterInfoReader,
-                                  DescribeClusterReader describeClusterReader) {
+                                  DescribeClusterReader describeClusterReader,
+                                  DotShReader dotShReader) {
         super(rootPath,
                 yamlReader,
                 tableStatReader,
-                describeClusterReader);
+                describeClusterReader,
+                dotShReader);
         this.clusterInfoReader = clusterInfoReader;
 
         nodesPath = rootPath + File.separator + "nodes";
@@ -36,6 +35,7 @@ public class OpsCenterGeneratedDiag extends DirectoryParser {
         dseYamls = groupFiles(nodesPath, nodes, "conf/dse/dse.yaml");
         tableStats = groupFiles(nodesPath, nodes, "nodetool/cfstats");
         describeClusters = groupFiles(nodesPath, nodes, "nodetool/describecluster");
+        cassandraEnvs = groupFiles(nodesPath, nodes, "conf/cassandra/cassandra-env.sh");
 
         clusterInfo = groupFiles(rootPath, new String[]{ "" }, "cluster_info.json");
     }

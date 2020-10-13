@@ -13,20 +13,18 @@ import java.util.Iterator;
 import java.util.List;
 
 public class StargateStorage extends DataStorage {
-
-    List<String> existingConf = Lists.newArrayList();
+    private String collectionName ;
 
     public StargateStorage(Cluster cluster) {
         super(cluster);
+        collectionName = cluster.getClusterName();
     }
-
 
     @Override
     public List<Config> read(String confName) {
         List<Config> list = Lists.newArrayList();
-        String collectionName = getCollectionName();
         try {
-            ObjectNode read = (ObjectNode) StargateHelper.read(collectionName, confName.replaceAll(" ", "_"));
+            ObjectNode read = (ObjectNode) StargateHelper.read(collectionName, confName);
             if(read == null)
                 return list;
             JsonNode data = read.get("data");
@@ -47,31 +45,10 @@ public class StargateStorage extends DataStorage {
             JsonNode jnode = StargateHelper.mapper.createObjectNode()
                     .set(conf.getNodeIp().replace('.', '+'),StargateHelper.mapper.valueToTree(conf));
             System.out.println(conf.toString());
-            String collectionName = getCollectionName();
             StargateHelper.insert(jnode, collectionName, conf.getConfName().replaceAll(" ", "_"));
         } catch(IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
-    }
-
-    String getCollectionName(){
-        return cluster.getClusterName();
-    }
-
-    public static void main(String[] args) {
-        Cluster cluster = new Cluster("2020", "Q3", "Staging", "Sky_OVP_UMVDSE");
-        StargateStorage sg = new StargateStorage(cluster);
-        Config cg = new Config( "IP1", "name1", "config1" , "val1");
-
-        Config cg2 = new Config("IP2", "name2", "config1" , "val2");
-        sg.write(cg);
-
-        sg.write(cg2);
-
-        List<Config> t = sg.read( "config1");
-        for(Config c : t){
-            System.out.println(c);
-        }
     }
 }
