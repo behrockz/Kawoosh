@@ -3,13 +3,13 @@ package com.datastax.kawoosh;
 import com.datastax.kawoosh.analyser.Analyser;
 import com.datastax.kawoosh.analyser.rules.*;
 import com.datastax.kawoosh.common.Cluster;
-import com.datastax.kawoosh.dataStorageAdaptor.MapStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.stargate.NewStargateStorage;
-import com.datastax.kawoosh.dataStorageAdaptor.stargate.StargateStorage;
+import com.datastax.kawoosh.dataStorageAdaptor.stargate.RestClient;
 import com.datastax.kawoosh.parser.DirectoryParser;
 import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
 import com.datastax.kawoosh.parser.fileReader.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
 public class Main {
@@ -21,7 +21,9 @@ public class Main {
         DescribeClusterReader describeClusterReader = new DescribeClusterReader();
         DotShReader dotShReader = new DotShReader();
         Cluster cluster = new Cluster(args[2], args[3], args[4], args[5]);
-        DataStorage storage = new NewStargateStorage(cluster);
+        ObjectMapper mapper = new ObjectMapper();
+        RestClient restClient = new RestClient(mapper, cluster.getClusterName());
+        DataStorage storage = new NewStargateStorage(cluster, restClient, mapper);
 
         switch (args[0]) {
             case "Upload": {
