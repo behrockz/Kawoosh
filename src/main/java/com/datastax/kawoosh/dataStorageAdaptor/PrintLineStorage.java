@@ -12,12 +12,13 @@ public class PrintLineStorage extends DataStorage {
     }
 
     @Override
-    public List<Config> read(String confName) {
+    public CompletableFuture<List<Config>> read(String confName) {
         return null;
     }
 
     @Override
-    public void write(Config conf) {
+    public CompletableFuture<Boolean> write(Config conf) {
         System.out.println(conf.toString());
+        return null;
     }
 }

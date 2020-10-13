@@ -48,7 +48,8 @@ public class TableStatReader implements Reader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return stream.build();
+        System.out.println("Reading is finished for: " + path);
+        return stream.build().parallel();
     }
 
     Tuple readValue(String line){

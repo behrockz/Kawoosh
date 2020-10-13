@@ -9,9 +9,12 @@ import com.datastax.kawoosh.dataStorageAdaptor.astra.mapper.ConfigRowMapper;
 import com.datastax.kawoosh.dataStorageAdaptor.astra.mapper.ConfigRowMapperBuilder;
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.MappedAsyncPagingIterable;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.core.type.DataTypes;
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder;
+import jersey.repackaged.com.google.common.collect.Lists;
+import lombok.SneakyThrows;
 
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -21,14 +24,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class AstraStorage extends DataStorage {
 
-    private CqlSession session;
-    private ConfigDao configDao;
+    private final ConfigDao configDao;
 
     public AstraStorage(Cluster cluster) {
         super(cluster);
-        session = CqlSession.builder()
+        CqlSession session = CqlSession.builder()
                 .withCloudSecureConnectBundle(Paths.get("secure-connect-kawoosh.zip"))
-                .withAuthCredentials("kawoosh","kawoosh")
+                .withAuthCredentials("kawoosh", "kawoosh")
                 .withKeyspace("kawoosh")
                 .build();
 
@@ -53,19 +55,31 @@ public class AstraStorage extends DataStorage {
                 CqlIdentifier.fromCql(tableName.toLowerCase()));
     }
 
+    @SneakyThrows
     @Override
-    public List<Config> read(String confName) {
-        List<Config> all = configDao.findById(cluster.getYear(),
+    public CompletableFuture<List<Config>> read(String confName) {
+        CompletableFuture<MappedAsyncPagingIterable<Config>> mappedAsyncPagingIterableCompletableFuture = configDao.findById(cluster.getYear(),
                 cluster.getQuarter(),
                 cluster.getEnvironmentType(),
                 confName)
-                .map(c -> new Config(c.getNodeIp(), c.getFilePath(), c.getConfName(), c.getValue()))
-                .all();
-        return all;
+                .thenApply(configRowMappedAsyncPagingIterable -> configRowMappedAsyncPagingIterable
+                        .map(c -> new Config(c.getNodeIp(), c.getFilePath(), c.getConfName(), c.getValue())));
+        List<Config> configs = Lists.newArrayList();
+        MappedAsyncPagingIterable<Config> configMappedAsyncPagingIterable = mappedAsyncPagingIterableCompletableFuture.get();
+
+        while(true) {
+            configMappedAsyncPagingIterable.currentPage().forEach(c -> configs.add(c));
+            if(configMappedAsyncPagingIterable.hasMorePages())
+                configMappedAsyncPagingIterable.fetchNextPage();
+            else
+                break;
+        }
+
+        return CompletableFuture.completedFuture(configs);
     }
 
     @Override
-    public void write(Config conf) {
+    public CompletableFuture<Boolean> write(Config conf) {
         ConfigRow configRow = new ConfigRow(
                 cluster.getYear(),
                 cluster.getQuarter(),
@@ -75,5 +89,6 @@ public class AstraStorage extends DataStorage {
                 conf.getValue(),
                 conf.getFilename());
         configDao.save(configRow);
+        return CompletableFuture.completedFuture(true);
     }
 }

@@ -2,6 +2,8 @@ package com.datastax.kawoosh.analyser.rules;
 
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
+import java.util.concurrent.CompletableFuture;
+
 public abstract class Rule {
     protected DataStorage storage;
 
@@ -9,5 +11,5 @@ public abstract class Rule {
         this.storage = storage;
     }
 
-    public abstract String check();
+    public abstract CompletableFuture<String> check();
 }

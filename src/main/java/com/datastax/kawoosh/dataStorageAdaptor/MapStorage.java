@@ -16,20 +16,20 @@ public class MapStorage extends DataStorage {
     }
 
     @Override
-    public List<Config> read(String confName) {
-        return map.get(confName);
+    public CompletableFuture<List<Config>> read(String confName) {
+        return CompletableFuture.supplyAsync(() -> map.get(confName));
     }
 
     @Override
-    public void write(Config conf) {
+    public CompletableFuture<Boolean> write(Config conf) {
         if(!map.containsKey(getKey(conf)))
             map.put(getKey(conf), new ArrayList<>());
 
         map.get(getKey(conf)).add(conf);
+        return CompletableFuture.completedFuture(true);
     }
 
     private String getKey(Config clusterConfig){
         return clusterConfig.getConfName();
     }
-
 }

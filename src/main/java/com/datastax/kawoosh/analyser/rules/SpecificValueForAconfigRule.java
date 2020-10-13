@@ -4,6 +4,7 @@ import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public abstract class SpecificValueForAconfigRule extends Rule {
@@ -22,16 +23,21 @@ public abstract class SpecificValueForAconfigRule extends Rule {
     }
 
     @Override
-    public String check() {
-        List<Config> clusterConfigs = storage.read(configName);
+    public CompletableFuture<String> check() {
+        return storage
+                .read(configName)
+                .thenApply(clusterConfigs -> getResult(clusterConfigs));
+    }
+
+    private String getResult(List<Config> clusterConfigs) {
         if (clusterConfigs == null ||
                 clusterConfigs.isEmpty() ||
                 clusterConfigs.stream().allMatch(cc -> cc.getValue().toLowerCase().equals(expectedValue)))
             return "Rule " + ruleName + " returned success!";
-        String result = "Rule " + ruleName + " failed!\n\t";
-        result += String.join("\n\t", clusterConfigs.stream()
-                .map(clusterConfig -> clusterConfig.toString())
-                .collect(Collectors.toList()));
-        return result;
+        StringBuilder result = new StringBuilder("Rule " + ruleName + " failed!\n\t");
+        result.append(clusterConfigs.stream()
+                .map(Config::toString)
+                .collect(Collectors.joining("\n\t")));
+        return result.toString();
     }
 }

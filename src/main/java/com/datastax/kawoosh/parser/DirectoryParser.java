@@ -4,6 +4,7 @@ import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.common.IpPathPair;
 import com.datastax.kawoosh.parser.fileReader.*;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public abstract class DirectoryParser {
@@ -49,18 +50,18 @@ public abstract class DirectoryParser {
         Stream<Config> describeClusterResults = parseTheFiles(describeClusterReader, describeClusters);
         Stream<Config> casssandraEnvsResult = parseTheFiles(dotShReader, cassandraEnvs);
 
-
         return Stream.of(
+                tableStatsResult,
                 cassandraYamlsResults,
                 dseYamlsResults,
-                tableStatsResult,
                 describeClusterResults,
                 casssandraEnvsResult)
+                .parallel()
                 .flatMap(c -> c);
     }
 
     protected Stream<Config> parseTheFiles(Reader reader, Stream<IpPathPair> files){
-        return files.flatMap( f -> reader.read(f.getPath()).map(entry ->
+        return files.parallel().flatMap( f -> reader.read(f.getPath()).map(entry ->
                 new Config(
                         f.getIp() + ": " + entry.getValue3(),
                         f.getRelativePath(),

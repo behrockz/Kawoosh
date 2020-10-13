@@ -24,15 +24,14 @@ public class NewStargateStorage extends DataStorage {
 
     @SneakyThrows
     @Override
-    public List<Config> read(String confName) {
+    public CompletableFuture<List<Config>> read(String confName) {
         confName = cleanseTheConfName(confName);
 
         CompletableFuture<JsonNode> jsonNodeCompletableFuture = restClient.get(confName);
         return jsonNodeCompletableFuture
                 .thenApply(jsonNode -> jsonNode.get("data"))
                 .thenApply(this::getListOfObjects)
-                .exceptionally(throwable -> Lists.newArrayList())
-                .get();
+                .exceptionally(throwable -> Lists.newArrayList());
     }
 
     private String cleanseTheConfName(String confName) {
@@ -41,9 +40,9 @@ public class NewStargateStorage extends DataStorage {
 
     @SneakyThrows
     @Override
-    public void write(Config conf) {
+    public CompletableFuture<Boolean> write(Config conf) {
         JsonNode jnode = getJsonNode(conf);
-        restClient.insert(jnode, cleanseTheConfName(conf.getConfName())).get();
+        return restClient.insert(jnode, cleanseTheConfName(conf.getConfName()));
     }
 
     @SneakyThrows

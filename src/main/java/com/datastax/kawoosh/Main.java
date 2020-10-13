@@ -3,7 +3,10 @@ package com.datastax.kawoosh;
 import com.datastax.kawoosh.analyser.Analyser;
 import com.datastax.kawoosh.analyser.rules.*;
 import com.datastax.kawoosh.common.Cluster;
+import com.datastax.kawoosh.common.Config;
+import com.datastax.kawoosh.common.Tuple;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
+import com.datastax.kawoosh.dataStorageAdaptor.astra.AstraStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.stargate.NewStargateStorage;
 import com.datastax.kawoosh.dataStorageAdaptor.stargate.RestClient;
 import com.datastax.kawoosh.parser.DirectoryParser;
@@ -11,6 +14,10 @@ import com.datastax.kawoosh.parser.OpsCenterGeneratedDiag;
 import com.datastax.kawoosh.parser.fileReader.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class Main {
     @SneakyThrows
@@ -24,6 +31,7 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         RestClient restClient = new RestClient(mapper, cluster.getClusterName());
         DataStorage storage = new NewStargateStorage(cluster, restClient, mapper);
+        //DataStorage storage = new AstraStorage(cluster);
 
         switch (args[0]) {
             case "Upload": {
@@ -39,7 +47,10 @@ public class Main {
             case "Report": {
                 RuleBook ruleBook = new RuleBook(storage);
                 Analyser analyser = new Analyser(ruleBook);
-                analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
+                analyser
+                        .analyse()
+                        .map(s -> s.thenAccept(r -> System.out.println("***********\n" + r)))
+                        .forEach(ss-> getaVoid(ss));
                 break;
             }
             case "Test": {
@@ -49,10 +60,18 @@ public class Main {
                         clusterInfoReader,
                         describeClusterReader,
                         dotShReader);
-                parser.readDiag().forEach(storage::write);
+                List<Config> configStream = parser.readDiag().collect(Collectors.toList());
+                System.out.println("Calculated!");
+                configStream.parallelStream()
+                        .map(c -> storage.write(c).thenAccept( r -> System.out.println(c.toString() + (r ? " Success!" : " Failure" ))))
+                        .forEach(ss -> getaVoid(ss));
+
                 RuleBook ruleBook = new RuleBook(storage);
                 Analyser analyser = new Analyser(ruleBook);
-                analyser.analyse().forEach(s -> System.out.println("***********\n" + s));
+                analyser
+                        .analyse()
+                        .map(s -> s.thenAccept(r -> System.out.println("***********\n" + r)))
+                        .forEach(ss-> getaVoid(ss));
                 break;
             }
             default:
@@ -62,5 +81,13 @@ public class Main {
 
         System.out.println("Done!");
         System.exit(0);
+    }
+
+    private static void getaVoid(CompletableFuture<Void> ss) {
+        try {
+            ss.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

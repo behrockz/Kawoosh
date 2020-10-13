@@ -5,6 +5,7 @@ import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public abstract class TableValueInRangeRule extends Rule {
@@ -26,8 +27,13 @@ public abstract class TableValueInRangeRule extends Rule {
     }
 
     @Override
-    public String check() {
-        List<Config> configs = storage.read(configName);
+    public CompletableFuture<String> check() {
+        return storage
+            .read(configName)
+            .thenApply(configs -> getResult(configs));
+    }
+
+    private String getResult(List<Config> configs) {
         if(configs == null || configs.isEmpty())
             return "Rule " + ruleName + " is inconclusive due to lack of data!";
 
@@ -38,12 +44,14 @@ public abstract class TableValueInRangeRule extends Rule {
                 .map(c -> c.toString())
                 .collect(Collectors.toList());
 
-        if(results.isEmpty())
-            return "Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") returns success!";
-
-        String retVal = "Rule " + ruleName + " (min:" + minValue + ", max:" + maxValue + ") returns these as out of range:";
-        retVal += String.join("\n\t", results);
-        return retVal;
-
+        String result = String.format("Rule %s (min: %s, max: %s) returns ", ruleName, minValue, maxValue);
+        StringBuilder retVal = new StringBuilder(result);
+        if(results.isEmpty()) {
+            retVal.append("success!");
+        } else {
+            retVal.append("these as out of range: ");
+            retVal.append(String.join("\n\t", results));
+        }
+        return retVal.toString();
     }
 }

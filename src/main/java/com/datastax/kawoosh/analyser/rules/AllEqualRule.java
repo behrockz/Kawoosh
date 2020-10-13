@@ -4,6 +4,7 @@ import com.datastax.kawoosh.common.Config;
 import com.datastax.kawoosh.dataStorageAdaptor.DataStorage;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public abstract class AllEqualRule extends Rule {
@@ -18,9 +19,12 @@ public abstract class AllEqualRule extends Rule {
     }
 
     @Override
-    public String check() {
-        List<Config> configs = storage.read(configName);
-        long count = configs.stream().map(Config::getValue).distinct().count();
+    public CompletableFuture<String> check() {
+        return storage.read(configName).thenApply(configs -> calculateResult(configs));
+    }
+
+    private String calculateResult(List<Config> configs) {
+        long count = configs.stream().distinct().count();
         if(count == 1)
             return "Rule " + ruleName + " returned success!";
 

@@ -13,7 +13,7 @@ public abstract class DataStorage {
         this.cluster = cluster;
     }
 
-    public abstract List<Config> read(String confName);
+    public abstract CompletableFuture<List<Config>> read(String confName);
 
-    public abstract void write(Config conf);
+    public abstract CompletableFuture<Boolean> write(Config conf);
 }
